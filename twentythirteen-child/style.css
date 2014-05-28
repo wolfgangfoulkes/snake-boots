@@ -9,21 +9,23 @@ Version: 1.0
 
 @import url("../twentythirteen/style.css");
 
-.site-header .home-link
+.snakeboots-welcome-block
 {
-	max-width: 100%;
-	min-height: 100%;
+	display: block;
+	box-style: border-box;
 	width: 100%;
-	height: auto;
-	padding: 0 0;
+	height: 1600px;
 }
 
-.site-header .home-link .site-logo
+.snakeboots-welcome-block .snakeboots-welcome-link
 {
-	max-width: 100%;
+	display: inline-block;
 	width: 100%;
-	height: auto;
-	padding: 0 0;
+	padding-bottom: 25%; /*aspect ratio is 1/4. padding/margins are relative to parent width */
+	/*if I wanted to use actual content, see link called “css aspect ratio” */
+	background-image: url(images/cooltextwpsize.png);
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
 }
 
 /*
@@ -40,6 +42,7 @@ Version: 1.0
   width: 740px; 
 }
 */
+
 
 /*
 .entry-content img {
