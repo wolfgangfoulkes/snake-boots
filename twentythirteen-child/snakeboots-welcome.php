@@ -8,7 +8,8 @@
 <?php get_header("welcome"); ?>
 
 <div class="snakeboots-welcome-block">
-    <a class="snakeboots-welcome-link" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
+    <a class="snakeboots-welcome-link" href="<?php echo get_page_uri(99);?>" rel="navigation">
+    <?php /*get_page_uri returns a link with site/pagename. this is not the default setting for page permalinks*/ ?>
     <?php /*use a background image here*/ ?>
     </a>
 </div>
