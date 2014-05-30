@@ -16,12 +16,7 @@
         <div class = "sb-nav-row">
             <a class= "sb-nav-link1" href= "<?php echo esc_url( home_url( '/' ) ); ?>">
             </a>
-            <?php $image_attributes = wp_get_attachment_image_src( 101 );
-                if( $image_attributes ) {
-                    ?>
-            <a class= "sb-nav-link2" href= "<?php echo esc_url( home_url( '/' ) ); ?>" style = "background-image: url(<?php echo $image_attributes[0]; ?>);">
-                <?php }/*attributes[1-2] are width and height*/?>
-
+            <a class= "sb-nav-link2" href= "<?php echo esc_url( home_url( '/' ) ); ?>">
             </a>
         </div>
     </div>
