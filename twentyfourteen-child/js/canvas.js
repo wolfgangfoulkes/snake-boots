@@ -129,7 +129,8 @@ function startRendering()
 	var near = 1.0;
 	var far = 10.0;
     
-	mat4.frustum(left, right, bottom, top, near, far, projectionMatrix);
+	//mat4.frustum(left, right, bottom, top, near, far, projectionMatrix);
+    mat4.ortho(left, right, bottom, top, near, far, projectionMatrix);
 	
 	// Set the background clear color to gray.
 	gl.clearColor(0.5, 0.5, 0.5, 1.0);
@@ -138,12 +139,12 @@ function startRendering()
 	// Position the eye behind the origin.
 	var eyeX = 0.0;
 	var eyeY = 0.0;
-	var eyeZ = 1.5;
+	var eyeZ = 1.0;
     
 	// We are looking toward the distance
 	var lookX = 0.0;
 	var lookY = 0.0;
-	var lookZ = -5.0;
+	var lookZ = -1.0;
     
 	// Set our up vector. This is where our head would be pointing were we holding the camera.
 	var upX = 0.0;
@@ -210,10 +211,12 @@ function render(time)
 	gl.clear(gl.COLOR_BUFFER_BIT);
     
     var scale = vec3.create;
-    scale[0] = aspect * 1.0; scale[1] = 1; scale[2] = 0.0;
+    scale[0] = aspect * .99; scale[1] = .99; scale[2] = 0.0;
     
     mat4.identity(modelMatrix);
+    //mat4.translate(modelMatrix, [0, 0, 1.95]); //camera position is 3, nearest clipping plane is 1.
     mat4.scale(modelMatrix, scale);
+    
     drawRect();
     
     // Send the commands to WebGL
