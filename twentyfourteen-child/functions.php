@@ -47,7 +47,7 @@ function snakeboots_setup()
 	add_theme_support( 'custom-header',
         array(
               // Header image default
-            'default-image' => "<?php echo get_stylesheet_directory_uri();?>/images/cooltextwpsize.png",
+            'default-image' => get_stylesheet_directory_uri() . "/images/cooltextwpsize.png",
             // Header text display default
             'header-text' => false,
             // Header text color default
@@ -69,6 +69,22 @@ function snakeboots_setup()
 function snakeboots_load_scripts()
 {
     /* Enqueue custom Javascript here using wp_enqueue_script(). */
+    wp_register_script(
+                       "webgl_utils",
+                       get_stylesheet_directory_uri() . "/js/webgl_utils.js",
+                       array("jquery")
+                       );
+    /* get_template_directory_uri() would give us the parent theme, because we're using page.php */
+    /* note the '/' before js. safeguards using the correct directory */
+    /* last parameter is an array of dependencies */
+    wp_enqueue_script("webgl_utils");
+    
+    wp_register_script(
+                       "glmatrix",
+                       get_stylesheet_directory_uri() . "/js/glmatrix.js",
+                       array("jquery", "webgl_utils")
+                       );
+    wp_enqueue_script("glmatrix");
     
     /* Load the comment reply JavaScript. */
     if ( is_singular() && get_option( 'thread_comments' ) && comments_open() )
@@ -76,6 +92,8 @@ function snakeboots_load_scripts()
         wp_enqueue_script( 'comment-reply' );
     }
 }
+add_action("wp_enqueue_scripts", "snakeboots_load_scripts");
+/* action called by default in the head */
 
 /** modified from twentyfourteen/inc/custom-header
  * Style the header text displayed on the blog.
