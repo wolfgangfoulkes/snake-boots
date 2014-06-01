@@ -2,7 +2,7 @@
     /*
      Template Name: Canvas
      */
-get_header(); ?>
+get_header("welcome"); ?>
 
 <div id="main-content" class="main-content">
     <div id="primary" class="content-area">

@@ -30,7 +30,7 @@
 
         <div class = "sb-nav-cell">
             <div class = "sb-nav-rel">
-                <a class= "sb-nav-abs" href= "<?php echo esc_url( home_url( '/' ) ) . "navigation"; ?>">
+                <a class= "sb-nav-abs" href= "<?php echo esc_url( home_url( '/' ) ) . "contact"; ?>">
                 </a>
             </div>
         </div>

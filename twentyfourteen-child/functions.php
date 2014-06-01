@@ -66,7 +66,7 @@ function snakeboots_setup()
 	);
 }
     
-function snakeboots_load_scripts()
+function snakeboots_load_scripts() /*function will be called in every page that uses enqueu-scripts*/
 {
     /* Enqueue custom Javascript here using wp_enqueue_script(). */
     wp_register_script(
@@ -77,14 +77,26 @@ function snakeboots_load_scripts()
     /* get_template_directory_uri() would give us the parent theme, because we're using page.php */
     /* note the '/' before js. safeguards using the correct directory */
     /* last parameter is an array of dependencies */
-    wp_enqueue_script("webgl_utils");
-    
     wp_register_script(
                        "glmatrix",
                        get_stylesheet_directory_uri() . "/js/glmatrix.js",
                        array("jquery", "webgl_utils")
                        );
+    
+    wp_register_script(
+                       "contact-form",
+                       get_stylesheet_directory_uri() . "/js/contact-form.js",
+                       array("jquery")
+                       );
+    
+    wp_enqueue_script("webgl_utils");
     wp_enqueue_script("glmatrix");
+    
+    /*  script that animates contact-form */
+    if (is_page_template("snakeboots-contact.php")) /*with is_page() we would use the slug*/
+    {
+        wp_enqueue_script( "contact-form" );
+    }
     
     /* Load the comment reply JavaScript. */
     if ( is_singular() && get_option( 'thread_comments' ) && comments_open() )
@@ -94,6 +106,20 @@ function snakeboots_load_scripts()
 }
 add_action("wp_enqueue_scripts", "snakeboots_load_scripts");
 /* action called by default in the head */
+    
+function snakeboots_load_styles()
+{
+    wp_register_style(
+                       "contact-form",
+                       get_stylesheet_directory_uri() . "/contact-form.css"
+                       );
+    
+    if (is_page_template("snakeboots-contact.php"))
+    {
+        wp_enqueue_style("contact-form");
+    }
+}
+add_action("wp_enqueue_scripts", "snakeboots_load_styles");
 
 /** modified from twentyfourteen/inc/custom-header
  * Style the header text displayed on the blog.
@@ -118,10 +144,12 @@ function snakeboots_header_style() {
         ?>
 		.site-header
         {
+            /*
             background: url(<?php header_image(); ?>) no-repeat scroll top;
             background-size: 1600px auto;
             padding:44px 0 <?php echo HEADER_IMAGE_HEIGHT; ?>px 0; /* Bottom padding is the same height as the image */
             overflow: visible;
+            */
 		}
 	<?php
     endif;
@@ -131,8 +159,10 @@ function snakeboots_header_style() {
         ?>
         .site-header
         {
+            /*
             padding: 0 0 <?php echo HEADER_IMAGE_HEIGHT; ?>px 0; /* Bottom padding is the same height as the image */
             overflow: visible;
+            */
         }
 		.site-title,
 		.site-description
@@ -178,6 +208,7 @@ function snakeboots_admin_header_style()
 	.appearance_page_custom-header
     #headimg
     {
+        /*
         border: none;
         -webkit-box-sizing: border-box;
         -moz-box-sizing:    border-box;
@@ -188,9 +219,11 @@ function snakeboots_admin_header_style()
             echo 'background: url(' . esc_url( $header_image ) . ') no-repeat scroll top; background-size: 1600px auto;';
         } ?>
         padding: 0 20px;
+        */
     }
     #headimg .home-link
     {
+        /*
         -webkit-box-sizing: border-box;
         -moz-box-sizing:    border-box;
         box-sizing:         border-box;
@@ -202,6 +235,7 @@ function snakeboots_admin_header_style()
             echo 'min-height: 230px;';
         } ?>
         width: 100%;
+        */
     }
     <?php if ( ! display_header_text() ) : ?>
     #headimg h1,
@@ -215,28 +249,38 @@ function snakeboots_admin_header_style()
     <?php endif; ?>
     #headimg h1
     {
+        /*
         font: bold 60px/1 Bitter, Georgia, serif;
         margin: 0;
         padding: 58px 0 10px;
+        */
     }
     #headimg h1 a
     {
+        /*
         text-decoration: none;
+        */
     }
     #headimg h1 a:hover
     {
+        /*
         text-decoration: underline;
+        */
     }
     #headimg h2
     {
+        /*
         font: 200 italic 24px "Source Sans Pro", Helvetica, sans-serif;
         margin: 0;
         text-shadow: none;
+        */
     }
     .default-header img
     {
+        /*
         max-width: 230px;
         width: auto;
+        */
     }
     </style>
 <?php
@@ -252,6 +296,7 @@ function snakeboots_admin_header_style()
 function snakeboots_admin_header_image()
 {
 ?>
+/*
 <div id="headimg" style="background: url(<?php header_image(); ?>) no-repeat scroll top; background-size: 1600px auto;">
 <?php $style = ' style="color:#' . get_header_textcolor() . ';"'; ?>
     <div class="home-link">
@@ -259,4 +304,5 @@ function snakeboots_admin_header_image()
         <h2 id="desc" class="displaying-header-text"<?php echo $style; ?>><?php bloginfo( 'description' ); ?></h2>
     </div>
 </div>
+ */
 <?php }
