@@ -66,6 +66,8 @@ function snakeboots_setup()
 	);
 }
     
+
+
 function snakeboots_load_scripts() /*function will be called in every page that uses enqueu-scripts*/
 {
     /* Enqueue custom Javascript here using wp_enqueue_script(). */
@@ -74,9 +76,9 @@ function snakeboots_load_scripts() /*function will be called in every page that 
                        get_stylesheet_directory_uri() . "/js/webgl_utils.js",
                        array("jquery")
                        );
-    /* get_template_directory_uri() would give us the parent theme, because we're using page.php */
-    /* note the '/' before js. safeguards using the correct directory */
-    /* last parameter is an array of dependencies */
+                        /* get_template_directory_uri() would give us the parent theme, because we're using page.php */
+                        /* note the '/' before js. safeguards using the correct directory */
+                        /* last parameter is an array of dependencies */
     wp_register_script(
                        "glmatrix",
                        get_stylesheet_directory_uri() . "/js/glmatrix.js",
@@ -89,8 +91,14 @@ function snakeboots_load_scripts() /*function will be called in every page that 
                        array("jquery")
                        );
     
+    wp_register_script(
+                       "three",
+                       get_stylesheet_directory_uri() . "/js/three.min.js"
+                       );
+    
     wp_enqueue_script("webgl_utils");
     wp_enqueue_script("glmatrix");
+    wp_enqueue_script("three");
     
     /*  script that animates contact-form */
     if (is_page_template("snakeboots-contact.php")) /*with is_page() we would use the slug*/
@@ -106,7 +114,9 @@ function snakeboots_load_scripts() /*function will be called in every page that 
 }
 add_action("wp_enqueue_scripts", "snakeboots_load_scripts");
 /* action called by default in the head */
-    
+
+
+
 function snakeboots_load_styles()
 {
     wp_register_style(
@@ -120,7 +130,35 @@ function snakeboots_load_styles()
     }
 }
 add_action("wp_enqueue_scripts", "snakeboots_load_styles");
+    
 
+function temp_dir_func($atts, $content = null)
+{
+    $args = shortcode_atts( array("href" => ""), /* defaults */
+                          $atts);
+    $dir = trailingslashit( get_template_directory_uri() ); /*if there's a trailing slash, remove. add trailing slash */
+    return $dir . $args["href"];
+}
+
+function style_dir_func($atts, $content = null)
+{
+    $args = shortcode_atts( array("href" => ""), /* defaults */
+                          $atts);
+    $dir = trailingslashit( get_stylesheet_directory_uri() );
+    return $dir . $args["href"];
+}
+
+
+/*****SHORTCODES*****/
+function register_shortcodes()
+{
+    add_shortcode("temp_dir", "temp_dir_func");   /* returns string */
+    add_shortcode("style_dir", "style_dir_func"); /* returns string */
+}
+add_action("init", register_shortcodes);
+
+    
+    
 /** modified from twentyfourteen/inc/custom-header
  * Style the header text displayed on the blog.
  *

@@ -40,7 +40,7 @@ get_header("welcome"); ?>
                 }
             </script></pre>
 
-            <pre><script type="text/javascript" src= "http://snake-boots.com/wp-content/themes/twentyfourteen-child/js/canvas.js"> </script></pre>
+            <pre><script type="text/javascript" src= "<?php echo get_stylesheet_directory_uri() . "/js/canvas.js" ?>" > </script></pre>
             <pre><script type="text/javascript">
             <!--
             main();
