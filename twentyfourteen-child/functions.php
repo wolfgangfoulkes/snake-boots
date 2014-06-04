@@ -93,7 +93,8 @@ function snakeboots_load_scripts() /*function will be called in every page that 
     
     wp_register_script(
                        "three",
-                       get_stylesheet_directory_uri() . "/js/three.min.js"
+                       get_stylesheet_directory_uri() . "/js/three.min.js",
+                       array("jquery")
                        );
     
     wp_enqueue_script("webgl_utils");
