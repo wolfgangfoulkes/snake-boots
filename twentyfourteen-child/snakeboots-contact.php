@@ -5,8 +5,9 @@ Template Name: Contact Form
 ?>
 
 <?php 
-//If the form is submitted
+//If the post request is submitted
 if(isset($_POST['submitted'])) {
+/*on bottom, we set all the values of $_POST: here we use them*/
 
 	//Check to see if the honeypot captcha field was filled in
 	if(trim($_POST['checking']) !== '') {
@@ -67,7 +68,7 @@ if(isset($_POST['submitted'])) {
 	}
 } ?>
 
-<?php get_header(); ?>
+<?php get_header("welcome"); ?>
 
 <?php if(isset($emailSent) && $emailSent == true) { ?>
 
@@ -90,15 +91,17 @@ if(isset($_POST['submitted'])) {
 		<?php } ?>
 
         <?php /* OUR CUSTOM FORM */ ?>
+        <?php/*below, we set all the values of $_POST, then above we use them*/?>
 
         <div id="contact_form_block">
             <form action="<?php the_permalink(); ?>" id="contactForm" method="post">
+            <?/*when submitted, send data in the body of an http post request to the url of this post.*/?>
 
                 <?php /* these first two items do the same thing: if name has been input, set value to name. if there's an error, display the error's contents in a <span>*/ ?>
                 <?php /* lookup: input, label "for" parameter */ ?>
                 <ol class="forms">
                     <li><label for="contactName">Name</label>
-                        <input type="text" name="contactName" id="contactName" value="<?php if(isset($_POST['contactName'])) echo $_POST['contactName'];?>" class="requiredField" />
+                        <input type="text" name="contactName" id="contactName" value="<?php if(isset($_POST['contactName'])) echo $_POST['contactName']; else echo "Name";?>" class="requiredField" />
                         <?php if($nameError != '') { ?>
                             <span class="error"><?=$nameError;?></span> <?/* "=" is shorthand for echo methinks */?>
                         <?php } ?>

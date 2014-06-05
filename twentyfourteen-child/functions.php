@@ -71,9 +71,10 @@ function snakeboots_setup()
 function snakeboots_load_scripts() /*function will be called in every page that uses enqueu-scripts*/
 {
     /* Enqueue custom Javascript here using wp_enqueue_script(). */
+    /*****LIBRARIES*****/
     wp_register_script(
                        "webgl_utils",
-                       get_stylesheet_directory_uri() . "/js/webgl_utils.js",
+                       get_stylesheet_directory_uri() . "/js/libs/webgl_utils.js",
                        array("jquery")
                        );
                         /* get_template_directory_uri() would give us the parent theme, because we're using page.php */
@@ -81,10 +82,28 @@ function snakeboots_load_scripts() /*function will be called in every page that 
                         /* last parameter is an array of dependencies */
     wp_register_script(
                        "glmatrix",
-                       get_stylesheet_directory_uri() . "/js/glmatrix.js",
+                       get_stylesheet_directory_uri() . "/js/libs/glmatrix.js",
                        array("jquery", "webgl_utils")
                        );
     
+    wp_register_script(
+                       "three-min",
+                       get_stylesheet_directory_uri() . "/js/libs/three/three.min.js",
+                       array("jquery")
+                       );
+    
+    wp_register_script(
+                       "three-orbit-controls",
+                       get_stylesheet_directory_uri() . "/js/libs/three/OrbitControls.js",
+                       array("jquery", "three-min")
+                       );
+    wp_register_script(
+                       "three-obj-loader",
+                       get_stylesheet_directory_uri() . "/js/libs/three/OBJLoader.js",
+                       array("jquery", "three-min")
+                       );
+    
+    /*****SCRIPTS*****/
     wp_register_script(
                        "contact-form",
                        get_stylesheet_directory_uri() . "/js/contact-form.js",
@@ -92,19 +111,34 @@ function snakeboots_load_scripts() /*function will be called in every page that 
                        );
     
     wp_register_script(
-                       "three",
-                       get_stylesheet_directory_uri() . "/js/three.min.js",
-                       array("jquery")
+                       "canvas",
+                       get_stylesheet_directory_uri() . "/js/canvas.js",
+                       array("jquery", "three-min", "three-orbit-controls", "three-obj-loader"),
+                       0.0,
+                       true //call in footer
                        );
     
+    /*****ALL PAGES*****/
     wp_enqueue_script("webgl_utils");
     wp_enqueue_script("glmatrix");
-    wp_enqueue_script("three");
+    wp_enqueue_script("three-min");
+    wp_enqueue_script("three-orbit-controls");
+    wp_enqueue_script("three-obj-loader");
     
+    /*****CONDITIONAL*****/
     /*  script that animates contact-form */
     if (is_page_template("snakeboots-contact.php")) /*with is_page() we would use the slug*/
     {
         wp_enqueue_script( "contact-form" );
+    }
+    
+    
+    if (is_page_template("snakeboots-canvas.php"))
+    {
+        wp_enqueue_script("three-orbit-controls");
+        wp_enqueue_script("three-obj-loader");
+        wp_enqueue_script("canvas");
+        wp_localize_script("canvas", "canvas_vars", array( "path" => get_stylesheet_directory_uri() ) );
     }
     
     /* Load the comment reply JavaScript. */
