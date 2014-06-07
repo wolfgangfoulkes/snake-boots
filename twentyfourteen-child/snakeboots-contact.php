@@ -101,14 +101,14 @@ if(isset($_POST['submitted'])) {
                 <?php /* lookup: input, label "for" parameter */ ?>
                 <ol class="forms">
                     <li><label for="contactName">Name</label>
-                        <input type="text" name="contactName" id="contactName" value="<?php if(isset($_POST['contactName'])) echo $_POST['contactName']; else echo "Name";?>" class="requiredField" />
+                        <input type="text" name="contactName" id="contactName" value="<?php if(isset($_POST['contactName'])) echo $_POST['contactName'];?>" class="requiredField"/>
                         <?php if($nameError != '') { ?>
                             <span class="error"><?=$nameError;?></span> <?/* "=" is shorthand for echo methinks */?>
                         <?php } ?>
                     </li>
                     
                     <li><label for="email">Email</label>
-                        <input type="text" name="email" id="email" value="<?php if(isset($_POST['email']))  echo $_POST['email'];?>" class="requiredField email" />
+                        <input type="text" name="email" id="email" value="<?php if(isset($_POST['email']))  echo $_POST['email'];?>" class="requiredField email"/>
                         <?php if($emailError != '') { ?>
                             <span class="error"><?=$emailError;?></span>
                         <?php } ?>

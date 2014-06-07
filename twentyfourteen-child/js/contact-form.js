@@ -1,4 +1,32 @@
+/*****
+TD:
+-no labels, set via "title" attribute.
+-apply to "required field" rather than "input", because one field isn't an <input>
+-apply style to use with "addClass". see: http://viralpatel.net/blogs/default-text-label-textbox-javascript-jquery/
+*****/
+
 jQuery(document).ready(function($) {
+
+    /* $('input[type="text"]').each(function(){
+ 
+    this.value = $(this).attr('title');
+    $(this).addClass('text-label');
+ 
+    $(this).focus(function(){
+        if(this.value == $(this).attr('title')) {
+            this.value = '';
+            $(this).removeClass('text-label');
+        }
+    });
+ 
+    $(this).blur(function(){
+        if(this.value == '') {
+            this.value = $(this).attr('title');
+            $(this).addClass('text-label');
+        }
+    }); */
+});
+    
 	$('form#contactForm').submit(function() {
         //on "submit" event
 		$('form#contactForm .error').remove();

@@ -156,12 +156,21 @@ function snakeboots_load_styles()
 {
     wp_register_style(
                        "contact-form",
-                       get_stylesheet_directory_uri() . "/contact-form.css"
+                       get_stylesheet_directory_uri() . "/styles/contact-form.css"
+                       );
+    wp_register_style(
+                       "canvas",
+                       get_stylesheet_directory_uri() . "/styles/canvas.css"
                        );
     
     if (is_page_template("snakeboots-contact.php"))
     {
         wp_enqueue_style("contact-form");
+    }
+    
+    if (is_page_template("snakeboots-canvas.php"))
+    {
+        wp_enqueue_style("canvas");
     }
 }
 add_action("wp_enqueue_scripts", "snakeboots_load_styles");

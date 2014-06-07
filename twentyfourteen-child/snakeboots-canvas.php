@@ -2,28 +2,23 @@
     /*
      Template Name: Canvas
      */
-get_header(); ?>
+get_header("noimage"); ?>
 
-<div class= "viewport-outer">
-    <div id="container" class= "viewport-inner">
-    </div>
+<div id="user-scripts" class="user-scripts">
+<?php
+        // Start the Loop.
+        while ( have_posts() ) : the_post();
+            the_content();
+        endwhile;
+    ?>
 </div>
 
-<script type = "glsl/vertex" data-name = "tex"
-        data-src= "<?php echo get_stylesheet_directory_uri() . "/shaders/texVert.glsl" ?>" > </script>
-<script type = "glsl/fragment" data-name = "tex"
-        data-src= "<?php echo get_stylesheet_directory_uri() . "/shaders/texFrag.glsl" ?>" > </script>
-<?php
-/*
-    <script type="text/javascript" src= "<?php echo get_stylesheet_directory_uri() . "/js/OrbitControls.js" ?>">
-    </script>
-    <script type="text/javascript" src= "<?php echo get_stylesheet_directory_uri() . "/js/OBJLoader.js" ?>">
-    </script>
-    <script type="text/javascript" src= "<?php echo get_stylesheet_directory_uri() . "/js/canvas.js" ?>">
-    </script>
- */
-?>
+<div id="container" class= "viewport">
+</div>
+
 
 <?php
     get_sidebar();
     get_footer();
+    
+    

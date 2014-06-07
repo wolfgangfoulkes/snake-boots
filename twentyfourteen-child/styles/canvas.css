@@ -1,0 +1,56 @@
+/*****CANVAS*****/
+
+/*fix max width for page*/
+.page-template-snakeboots-canvas-php #page
+{
+	position: absolute; /*same as fixed at top-level*/
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	max-width: 100%;
+}
+
+/*fix max width for masthead*/
+.page-template-snakeboots-canvas-php #masthead
+{
+	position: absolute;
+	top: 0;
+	width: 100%;
+	max-width: 100%;
+}
+
+/*position relative so elements can be positioned absolutely*/
+.page-template-snakeboots-canvas-php #main
+{
+	margin: 0;
+	display: inline;
+}
+
+.page-template-snakeboots-canvas-php #secondary
+{
+	display: none;
+}
+
+/*remove black left margin from media query resize*/
+.page-template-snakeboots-canvas-php .site:before
+{
+	display: none;
+}
+
+.page-template-snakeboots-canvas-php .viewport
+{
+	position: absolute;
+	left: 0;
+	right: 0;
+	top:	0;
+	bottom: 0;
+}
+
+.page-template-snakeboots-canvas-php #colophon
+{
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+}
+
