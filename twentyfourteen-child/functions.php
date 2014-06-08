@@ -103,6 +103,13 @@ function snakeboots_load_scripts() /*function will be called in every page that 
                        array("jquery", "three-min")
                        );
     
+    wp_register_script(
+                       "dat-gui",
+                       get_stylesheet_directory_uri() . "/js/libs/dat.gui.min.js",
+                       array("jquery")
+                       );
+    
+    
     /*****SCRIPTS*****/
     wp_register_script(
                        "contact-form",
@@ -124,6 +131,7 @@ function snakeboots_load_scripts() /*function will be called in every page that 
     wp_enqueue_script("three-min");
     wp_enqueue_script("three-orbit-controls");
     wp_enqueue_script("three-obj-loader");
+    wp_enqueue_script("dat-gui");
     
     /*****CONDITIONAL*****/
     /*  script that animates contact-form */

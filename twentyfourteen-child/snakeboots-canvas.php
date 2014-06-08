@@ -16,6 +16,9 @@ get_header("noimage"); ?>
 <div id="container" class= "viewport">
 </div>
 
+<div id="gui-window" class= "gui-window">
+</div>
+
 
 <?php
     get_sidebar();

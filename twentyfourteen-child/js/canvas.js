@@ -1,8 +1,4 @@
-
-
-jQuery(document).ready
-(function($){
-
+jQuery(document).ready(function($) {
 // Set up the scene, camera, and renderer as global variables.
 //doesn't change anything if these are globals
 var
@@ -10,8 +6,6 @@ $container,
 scene,
 camera,
 renderer,
-width,
-height,
 object,
 texture,
 shaderCount,
@@ -19,8 +13,21 @@ shaders = {},
 
 OBJLoaded = false,
 IMGLoaded = false,
-localpath = canvas_vars.path,
-/**
+localpath = canvas_vars.path;
+
+/*****GUI
+*/
+var gui_par = function ()
+{
+    this.list = 0;
+    this.opacity = 1.0;
+    this.color = [255.0, 255.0, 255.0];
+}
+var GUI = new gui_par();
+
+var uniforms;
+
+/*****CALLBACKS
 * Our internal callbacks object - a neat
 * and tidy way to organise the various
 * callbacks in operation.
@@ -29,8 +36,8 @@ callbacks =
 {
     windowResize: function() {
         if(renderer) {
-            width			= $container.width(),
-            height			= $container.height(),
+            var width			= $container.width();
+            var height			= $container.height();
             camera.aspect 	= width / height,
             renderer.setSize(width, height);
 
@@ -42,14 +49,39 @@ callbacks =
 
 init();
 
+function initGUI()
+{
+    console.log("called");
+    var gui = new dat.GUI({autoPlace: false});
+    var $gui	= $("#gui-window");
+    /*
+    $msg		= $('#msg')
+ 
+    //$gui.find("guidat").prepend($msg);
+ 
+    msg.css({
+        display: block; //this'd be for an object set with "display: none"
+        })
+    */
+    gui.add(GUI, "list").name("whatev").options({
+                                                                "off": 0,
+                                                                "on": 1
+                                                                }); //.onChange(changeColor)
+    gui.addColor(GUI, "color");
+    gui.add(GUI, "opacity").min(0.0).max(1.0);
+    //can save data too. lookintoit.
+    $gui.append(gui.domElement);
+}
+
+
 // Sets up the scene.
 function initScene()
 {
     // Create the scene and set the scene size.
     $container = $("#container"),
     scene = new THREE.Scene();
-    width = $container.width();
-    height = $container.height();
+    var width = $container.width();
+    var height = $container.height();
 
     // Create a renderer and add it to the DOM.
     renderer = new THREE.WebGLRenderer({antialias:true});
@@ -97,7 +129,6 @@ function initScene()
         }
     );
 }
-
  
  function loadShaders()
  {
@@ -163,12 +194,16 @@ function initScene()
  
     function initObject() {
     if ( !(OBJLoaded && IMGLoaded) ) { return false; }
+    
+    // set up uniforms for shader
+    uniforms = {
+        mColor: { type: "v3", value: new THREE.Vector3(GUI.color[0], GUI.color[1], GUI.color[2]) },
+        mTexture: { type: "t", value: texture },
+        mAlpha: { type: "f", value: GUI.opacity }
+    };
 
     var material = new THREE.ShaderMaterial({
-                                                uniforms: {
-                                                    mColor: {type: "v3", value: new THREE.Vector3(1.0, 1.0, 1.0)},
-                                                    mTexture: {type: "t", value: texture}
-                                                },
+                                                uniforms: uniforms,
                                                 vertexShader: shaders.tex.vertex,
                                                 fragmentShader: shaders.tex.fragment,
                                                 transparent: true
@@ -190,22 +225,36 @@ function animate() {
     // Read more about requestAnimationFrame at http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
     requestAnimationFrame(animate);
 
-    // Render the scene.
+    // Render the scene
     renderer.render(scene, camera);
     controls.update();
+    updateUniforms();
+}
+
+function updateUniforms()
+{
+    uniforms.mColor.value.x = GUI.color[0] * (1.0 / 255.0); //don't divide by zero, baby
+    uniforms.mColor.value.y = GUI.color[1] * (1.0 / 255.0);
+    uniforms.mColor.value.z = GUI.color[2] * (1.0 / 255.0);
+    uniforms.mAlpha.value = GUI.opacity;
+    
+    uniforms.mColor.needsUpdate = true;
+    uniforms.mAlpha.needsUpdate = true;
+    console.log( GUI.color[0] * (1.0 / 255.0), GUI.color[1] * (1.0 / 255.0), GUI.color[2] * (1.0 / 255.0) );
 }
  
- function checkInitScene()   {
+function checkInitScene()   {
     if (shaderCount) { return; }
     initScene();
  }
  
- function checkAnimate() {
+function checkAnimate() {
     if ( !(object && renderer && scene) ) { return; }
     animate();
  }
 
 function init() {
+    initGUI();
     loadShaders();
 }
 
