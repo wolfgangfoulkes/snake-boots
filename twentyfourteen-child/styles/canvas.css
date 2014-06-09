@@ -9,6 +9,7 @@
 	top: 0;
 	bottom: 0;
 	max-width: 100%;
+	overflow-y: hidden;
 }
 
 /*fix max width for masthead*/
@@ -18,7 +19,7 @@
 	top: 0;
 	width: 100%;
 	max-width: 100%;
-	z-index: 2;
+	z-index: 1;
 }
 
 /*position relative so elements can be positioned absolutely*/
@@ -39,14 +40,6 @@
 	display: none;
 }
 
-.page-template-snakeboots-canvas-php .gui-window
-{
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 2;
-}
-
 .page-template-snakeboots-canvas-php .viewport
 {
 	position: absolute;
@@ -54,7 +47,7 @@
 	right: 0;
 	top:	0;
 	bottom: 0;
-	z-index: 1;
+	z-index: 0;
 }
 
 .page-template-snakeboots-canvas-php #colophon
@@ -62,6 +55,15 @@
 	position: absolute;
 	width: 100%;
 	bottom: 0;
-	z-index: 2;
+	z-index: 1;
 }
 
+/*****GOOGLE GUI*****/
+
+.page-template-snakeboots-canvas-php .gui-window
+{
+	position: absolute;
+	top: 48px;
+	left: 0;
+	z-index: 1;
+}

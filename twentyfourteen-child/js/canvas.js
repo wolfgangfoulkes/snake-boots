@@ -51,7 +51,7 @@ init();
 
 function initGUI()
 {
-    console.log("called");
+    console.log("initGUI");
     var gui = new dat.GUI({autoPlace: false});
     var $gui	= $("#gui-window");
     /*

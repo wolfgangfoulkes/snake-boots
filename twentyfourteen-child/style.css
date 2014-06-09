@@ -9,6 +9,8 @@ Version: 1.0
 
 @import url("../twentyfourteen/style.css");
 
+
+
 .snakeboots-welcome-block
 {
 	display: block;
@@ -30,6 +32,54 @@ Version: 1.0
 	background-image: url(images/cooltextwpsize.png);
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
+}
+
+/***** GLOBAL *****/
+#page
+{
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 100%;
+}
+
+.site:before 
+{
+	display: none; /*otherwise background will display even w/o sidebar*/
+}
+
+
+#masthead
+{
+	background-color: black;
+	max-width: 100%;
+}
+
+.header-main
+{
+	min-height: auto;
+}
+
+.primary-navigation
+{
+	font-size: 11px;
+}
+
+.site-title, .search-toggle, .primary-navigation li
+{
+	height: 48px;
+	line-height: 48px; /*doesn’t apply to all, but it needs to match*/
+}
+
+#main
+{
+}
+
+#main-content {
+	float: none;
+}
+
+#secondary { /*sidebar*/
+	display: none; /*easier to don’t use sidebar, but why not?*/
 }
 
 /***** NAVIGATION *****/
