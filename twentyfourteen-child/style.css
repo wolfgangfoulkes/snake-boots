@@ -40,6 +40,11 @@ Version: 1.0
 	margin-left: auto;
 	margin-right: auto;
 	max-width: 100%;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
 }
 
 .site:before 
@@ -81,6 +86,113 @@ Version: 1.0
 #secondary { /*sidebar*/
 	display: none; /*easier to don’t use sidebar, but why not?*/
 }
+
+#colophon {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+/***** GALLERY *****/
+
+.page-template-snakeboots-gallery-php
+{
+	
+}
+
+.page-template-snakeboots-gallery-php .lightbox-grid
+{
+	position: absolute;
+	top: 15%;
+	left: 10%;
+	right: 10%;
+}
+
+.page-template-snakeboots-gallery-php .lightbox-cell
+{
+	position: relative;
+	display: table-cell;
+	box-sizing: border-box;
+	background-color: black;
+	width: 50%;
+	float: left;
+	cursor: pointer;
+}
+
+.page-template-snakeboots-gallery-php .lightbox-cell .cell-content
+{
+	display: block;
+	box-sizing: border-box;
+	margin: auto auto; /*align center*/
+	background-color: red;
+	opacity: 0;
+	transition: all 0.5s;
+	
+}
+
+.page-template-snakeboots-gallery-php .lightbox-cell:hover .cell-content
+{
+	opacity: 0.75;
+}
+
+.page-template-snakeboots-gallery-php .cell-title
+{
+	text-transform: uppercase;
+	color: white;
+	font-size: 14px;
+	text-align: center;
+	vertical-align: middle;
+	transform: scale(0.2);
+	transition: all 0.25s;
+}
+
+.page-template-snakeboots-gallery-php .lightbox-cell:hover .cell-title
+{
+	transform: scale(1);
+}
+
+.clearfix:before, .clearfix:after
+{
+	content: ““;
+	display: table;
+	clear: both;
+}
+
+/*Lightbox element style*/
+.lb_backdrop {
+	background: rgba(0, 0, 0, 0.9);
+	position: fixed;
+	top: 0; left: 0; right: 0; bottom: 0;
+}
+
+.lb_canvas {
+	background-color: white;
+	z-index: 1;
+	position: fixed;
+	top: 15vw;
+	left: 15vw;
+	right: 15vw;
+	bottom: 15vw; /*can do aspect-ratio stuff here*/
+	visibility: hidden;
+}
+
+/*A separate class for loading GIF, for easy Jquery handling*/
+.lb_canvas.loading {
+	background: white url("http://thecodeplayer.com/uploads/media/loading.gif") center center no-repeat;
+}
+
+.lb_title {
+	text-align: center;
+	display: block;
+	font-size: 14px;
+	text-transform: uppercase;
+	padding: 5px 0;
+	font-weight: bold;
+}
+
+
+
 
 /***** NAVIGATION *****/
 
