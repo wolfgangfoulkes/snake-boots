@@ -3,14 +3,14 @@
 jQuery(document).ready(function($) { //enclosure, might be easier to use the no-conflict method
 /*PRIVATE TO DOCUMENT*/
 
-    /* right now, this function as a member of GALLERY is a namespace more-trouble than it's worth. however, if you set up a param in the lightbox file that
+    /* right now, this function as a member of GALLERY is a namespace-more-trouble-than-it's-worth. however, if you set up a param in the lightbox file that
     checked if these were defined (on getting the name) BEFORE loading them from AJAX and CALLED them if they were already loaded it would make shit WAY faster.
     then you wouldn't need the name param: instead you would have either an ACTIVE param set by gallery, or an EXIT function to call (that would also take care of "deallocation") 
     also, checking the shaders by name would be similarly helpful */
     
     displayOBJ = new function () {
     /*PUBLIC SCOPE IN FUNCTION*/
-        var name = "canvas2",
+        var name = "canvas3",
         shaders = GALLERY.shaders || {},
         localpath = GALLERY.localpath,
         
@@ -107,10 +107,10 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
             scene.add(camera);
 
             // Set the background color of the scene.
-            renderer.setClearColor(new THREE.Color(0xFF0000));
+            renderer.setClearColor(new THREE.Color(0x002666));
 
             // Create a light, set its position, and add it to the scene.
-            var light = new THREE.PointLight(0xffffff);
+            var light = new THREE.PointLight(0x172305);
             light.position.set(-100,200,100);
             scene.add(light);
 

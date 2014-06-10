@@ -177,6 +177,15 @@ Version: 1.0
 	visibility: hidden;
 }
 
+.lb_canvas_inner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	visibility: inherit;
+}
+
 /*A separate class for loading GIF, for easy Jquery handling*/
 .lb_canvas.loading {
 	background: white url("http://thecodeplayer.com/uploads/media/loading.gif") center center no-repeat;
@@ -189,6 +198,14 @@ Version: 1.0
 	text-transform: uppercase;
 	padding: 5px 0;
 	font-weight: bold;
+}
+
+.page-template-snakeboots-gallery-php .gui-window
+{
+	position: absolute;
+	top: 48px;
+	left: 0;
+	z-index: 1;
 }
 
 
