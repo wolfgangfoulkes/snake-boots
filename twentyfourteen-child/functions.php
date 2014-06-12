@@ -70,6 +70,8 @@ function snakeboots_setup()
 
 function snakeboots_load_scripts() /*function will be called in every page that uses enqueu-scripts*/
 {
+    $s_dir = get_stylesheet_directory_uri();
+
     /* Enqueue custom Javascript here using wp_enqueue_script(). */
     /*****LIBRARIES*****/
     wp_register_script(
@@ -125,6 +127,14 @@ function snakeboots_load_scripts() /*function will be called in every page that 
                        true //call in footer
                        );
     
+    wp_register_script(
+                       "lb-preload",
+                       get_stylesheet_directory_uri() . "/js/lb-preload.js",
+                       array("jquery", "three-min", "three-obj-loader"),
+                       0.0,
+                       true
+                       );
+    
     /*****ALL PAGES*****/
     wp_enqueue_script("webgl_utils");
     wp_enqueue_script("glmatrix");
@@ -149,6 +159,14 @@ function snakeboots_load_scripts() /*function will be called in every page that 
         wp_localize_script("canvas", "canvas_vars", array( "path" => get_stylesheet_directory_uri() ) );
     }
     
+    if (is_page_template("snakeboots-preload.php"))
+    {
+        wp_enqueue_script("three-orbit-controls");
+        wp_enqueue_script("three-obj-loader");
+        wp_enqueue_script("lb-preload");
+        wp_localize_script("lb-preload", "sb_local", array( "dir" => $s_dir, "imagesURI" => array("uv_grid" => $s_dir . "/images/UV_Grid_Sm.jpg", "wg_text" => $s_dir . "/images/cooltextwpsize.png") ));
+    }
+    
     /* Load the comment reply JavaScript. */
     if ( is_singular() && get_option( 'thread_comments' ) && comments_open() )
     {
@@ -171,6 +189,11 @@ function snakeboots_load_styles()
                        get_stylesheet_directory_uri() . "/styles/canvas.css"
                        );
     
+    wp_register_style(
+                       "lb-gallery",
+                       get_stylesheet_directory_uri() . "/styles/lb-gallery.css"
+                       );
+    
     if (is_page_template("snakeboots-contact.php"))
     {
         wp_enqueue_style("contact-form");
@@ -179,6 +202,11 @@ function snakeboots_load_styles()
     if (is_page_template("snakeboots-canvas.php"))
     {
         wp_enqueue_style("canvas");
+    }
+    
+    if (is_page_template("snakeboots-preload.php"))
+    {
+        wp_enqueue_style("lb-gallery");
     }
 }
 add_action("wp_enqueue_scripts", "snakeboots_load_styles");
