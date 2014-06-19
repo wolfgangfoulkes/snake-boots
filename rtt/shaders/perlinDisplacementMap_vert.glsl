@@ -1,5 +1,3 @@
-#extension GL_OES_standard_derivatives : enable
-
 /* default
             "uniform mat4 modelMatrix;",
             "uniform mat4 modelViewMatrix;",
@@ -18,12 +16,9 @@
 
 varying vec2 vUV;
 
-uniform sampler2D mTexture;
-uniform float mAmplitude;
-
 void main()
 {
-	//pass position and texture coordinate on to the fragment shader
+	//pass position and texture coordinates on to the fragment shader
 	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 	vUV = uv;
 }
