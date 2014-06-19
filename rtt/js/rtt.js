@@ -107,10 +107,13 @@ jQuery(document).ready(function($) {
         // Create a renderer and add it to the DOM.
         renderer = new THREE.WebGLRenderer({antialias:true});
         renderer.setSize(width, height);
-        renderer.autoClear = false;
+        //renderer.autoClear = false; //removes "clear-color"
+        /**FOLLOWING is necessary for using functions like dFdx() in a shader, but it must be matched with code in the shader: */
         renderer.context.getExtension('OES_standard_derivatives');
-        //var gl = renderer.domElement.getContext('webgl') || renderer.domElement.getContext('experimental-webgl');
-        //gl.getExtension('OES_standard_derivatives');
+        /**an alternative to ABOVE:
+        var gl = renderer.domElement.getContext('webgl') || renderer.domElement.getContext('experimental-webgl');
+        gl.getExtension('OES_standard_derivatives');
+        */
         $container.append(renderer.domElement);
      
         //add custom callback to window.resize
@@ -119,7 +122,7 @@ jQuery(document).ready(function($) {
         // Create a camera, zoom it out from the model a bit, and add it to the scene.
         camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 20000);
         camera.position.set(0,0,100);
-        //scene.add(camera);
+        scene.add(camera);
         
         cameraO = new THREE.OrthographicCamera( width * -.5, width * .5, height * .5, height * -.5, -10000, 10000 );
 		cameraO.position.z = 100;
@@ -128,7 +131,7 @@ jQuery(document).ready(function($) {
         sceneD.add(cameraO);
 
         // Set the background color of the scene.
-        renderer.setClearColor(new THREE.Color(0xFF0000));
+        //renderer.setClearColor(new THREE.Color(0xFF0000));
 
         // Create a light, set its position, and add it to the scene.
         var light = new THREE.PointLight(0xffffff);
@@ -277,8 +280,8 @@ jQuery(document).ready(function($) {
         uniforms = {
             mColor: { type: "v3", value: new THREE.Vector3(GUI.color[0], GUI.color[1], GUI.color[2]) },
             mTextureD: { type: "t", value: new THREE.Texture() },
-            mTextureN: { type: "t", value: new THREE.Texture() },
-            mTexture: { type: "t", value: textureN },
+            mTextureN: { type: "t", value: textureN },
+            mTexture: { type: "t", value: textureOBJ },
             mAlpha: { type: "f", value: GUI.opacity }
         };
 
@@ -317,6 +320,8 @@ jQuery(document).ready(function($) {
         requestAnimationFrame(render);
 
         // Render the scene
+        renderNMap();
+        renderer.setClearColor(new THREE.Color(0xFF0000));
         renderer.render(scene, camera);
         controls.update();
         updateUniforms();

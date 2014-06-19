@@ -23,7 +23,9 @@ void main(void) {
     
     //falloff
     float falloff = sin( max( dot( Nfinal, vec3(0.25, 1.0, 0.25) ), 0.0) * 2.25);
-    float alpha = 0.01 + (0.3 * pow(falloff, 25.0));
+    float alphaFO = 0.01 + (0.3 * pow(falloff, 25.0));
+    float alpha = mix(alphaFO, 1.0, mAlpha);
+    //alpha = (alphaFO > 0.0) ? alpha : 1.0; alpha is not zero
     
-    gl_FragColor = vec4(dry * mColor, (1.0 - alpha) * mAlpha);
+    gl_FragColor = vec4(dry * mColor, alpha);
 }
