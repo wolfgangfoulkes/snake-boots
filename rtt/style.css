@@ -432,14 +432,24 @@ body
 	left: 0;
 	right: 0;
 	background-color: yellow;
+    z-index: 0;
 }
 
 #container
 {
 	position: absolute;
-	top: .2vh;
-	bottom: .2vh;
-	left: .2vh;
-	right: .2vh;
+	top: 1vh;
+	bottom: 1vh;
+	left: 1vh;
+	right: 1vh;
 	background-color: white;
+    z-index: 1;
+}
+
+#gui-container
+{
+	position: absolute;
+	top: 1vh;
+	left: 1vh;
+	z-index: 2;
 }
