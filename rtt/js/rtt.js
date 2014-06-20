@@ -1,7 +1,10 @@
+//IDEA: google switch manages display of each map.
+
 var GLOBAL = GLOBAL || {};
 
 jQuery(document).ready(function($) {
     var
+    initTime = new Date().getTime(),
     $container,
     
     width,
@@ -43,10 +46,13 @@ jQuery(document).ready(function($) {
     */
     var gui_par = function ()
     {
-        this.list = 0;
         this.opacity = 1.0;
         this.color = [255.0, 255.0, 255.0];
-        this.amplitude = 4.0;
+        this.amplitudeD = 1.0;
+        this.amplitudeN = 4.0;
+        this.octaves = 3;
+        this.lacunarity = 2.0;
+        this.rate; //coefficient for time
     }
     var GUI = new gui_par();
     
@@ -77,13 +83,12 @@ jQuery(document).ready(function($) {
         var gui = new dat.GUI({autoPlace: false});
         var $gui	= $("#gui-container");
         
-        gui.add(GUI, "list").name("whatev").options({
-                                                                    "off": 0,
-                                                                    "on": 1
-                                                                    }); //.onChange(changeColor)
         gui.addColor(GUI, "color");
         gui.add(GUI, "opacity").min(0.0).max(1.0);
-        gui.add(GUI, "amplitude").min(1.0/16.0).max(16.0);
+        gui.add(GUI, "amplitudeN").min(1.0/16.0).max(16.0);
+        gui.add(GUI, "amplitudeD").min(1.0/16.0).max(16.0);
+        gui.add(GUI, "octaves").min(1).max(8).step(1);
+        gui.add(GUI, "lacunarity").min(1.0).max(16.0);
         //can save data too. lookintoit.
         $gui.append(gui.domElement);
     }
@@ -145,6 +150,11 @@ jQuery(document).ready(function($) {
         lightN = new THREE.DirectionalLight( 0xffaaaa, 1.5 );
         lightN.position.set( 0, 0, -1.0 ).normalize();
         sceneN.add( lightN );
+        
+        initDMap();
+        renderDMap();
+        initNMap();
+        renderNMap();
 
         // Add OrbitControls so that we can pan around with the mouse.
         controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -158,8 +168,6 @@ jQuery(document).ready(function($) {
         loaderIMG.load(localpath + "/images/Blackened-Chicken-Pre-Cooked.jpg", function(image) {
             textureOBJ = new THREE.Texture(image);
             textureOBJ.needsUpdate = true;
-            initNMap();
-            renderNMap();
             IMGLoaded = true;
             if (initObject()) { checkRender(); } //fails if IMG and OBJ aren't uploaded
             }
@@ -237,14 +245,20 @@ jQuery(document).ready(function($) {
      }
     
     function initDMap() {
+        var curTime = new Date();
+        var runTime = (curTime.getTime() - initTime);
+    
         uniformsD = {
+            mTime: { type: "f", value: runTime * 0.001 },
+            mAmplitude: { type: "f", value: GUI.amplitudeD },
+            mLacunarity: { type: "f", value: GUI.lacunarity },
+            mOctaves: { type: "i", value: GUI.octaves }
         };
         
         materialD = new THREE.ShaderMaterial({
                                                     uniforms: uniformsD,
                                                     vertexShader: shaders.mapD.vertex,
                                                     fragmentShader: shaders.mapD.fragment,
-                                                    transparent: true
                                                 });
         
         var plane = new THREE.PlaneGeometry( width, height );
@@ -255,8 +269,8 @@ jQuery(document).ready(function($) {
     
     function initNMap() {
         uniformsN = {
-            mTexture: { type: "t", value: textureOBJ },
-            mAmplitude: { type: "f", value: GUI.amplitude }
+            mTexture: { type: "t", value: textureD },
+            mAmplitude: { type: "f", value: GUI.amplitudeN }
         };
         
         materialN = new THREE.ShaderMaterial({
@@ -279,7 +293,7 @@ jQuery(document).ready(function($) {
         // set up uniforms for shader
         uniforms = {
             mColor: { type: "v3", value: new THREE.Vector3(GUI.color[0], GUI.color[1], GUI.color[2]) },
-            mTextureD: { type: "t", value: new THREE.Texture() },
+            mTextureD: { type: "t", value: new THREE.Texture },
             mTextureN: { type: "t", value: textureN },
             mTexture: { type: "t", value: textureOBJ },
             mAlpha: { type: "f", value: GUI.opacity }
@@ -319,8 +333,11 @@ jQuery(document).ready(function($) {
         // Read more about requestAnimationFrame at http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
         requestAnimationFrame(render);
 
+        renderer.autoClear = false;
         // Render the scene
         renderNMap();
+        renderDMap();
+        renderer.autoClear = true;
         renderer.setClearColor(new THREE.Color(0xFF0000));
         renderer.render(scene, camera);
         controls.update();
@@ -329,6 +346,9 @@ jQuery(document).ready(function($) {
 
     function updateUniforms()
     {
+        var curTime = new Date();
+        var runTime = (curTime.getTime() - initTime);
+    
         uniforms.mColor.value.x = GUI.color[0] * (1.0 / 255.0); //don't divide by zero, baby
         uniforms.mColor.value.y = GUI.color[1] * (1.0 / 255.0);
         uniforms.mColor.value.z = GUI.color[2] * (1.0 / 255.0);
@@ -338,7 +358,17 @@ jQuery(document).ready(function($) {
         uniforms.mAlpha.needsUpdate = true;
         //console.log( GUI.color[0] * (1.0 / 255.0), GUI.color[1] * (1.0 / 255.0), GUI.color[2] * (1.0 / 255.0) );
         
-        uniformsN.mAmplitude.value = GUI.amplitude;
+        //displacement map
+        uniformsD.mAmplitude.value = GUI.amplitudeD;
+        uniformsD.mOctaves.value = GUI.octaves;
+        uniformsD.mLacunarity.value = GUI.lacunarity;
+        uniformsD.mTime.value = runTime * 0.001;
+        uniformsD.needsUpdate = true;
+        
+        console.log(initTime, runTime * 0.001);
+        
+        //normal map
+        uniformsN.mAmplitude.value = GUI.amplitudeN;
         uniformsN.needsUpdate = true;
     }
      

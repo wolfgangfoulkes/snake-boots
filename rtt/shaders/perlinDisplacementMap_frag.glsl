@@ -112,15 +112,19 @@ float pnoise(vec2 P, vec2 rep)
 }
 
 /****FBM stolen from CINDER's Perlin implementation*****/
-float fbm( vec2 v, int mOctaves, float lacunarity )
+float fbm( vec2 v, int octaves, float lacunarity )
 {
-	float result = 0.0f;
-	float amp = 0.5f;
+	float result = 0.0;
+	float amp = 0.5;
     
-	for( int i = 0; i < mOctaves; i++ ) {
-		result += cnoise( v ) * amp;
-		v.x *= lacunarity; v.y *= lacunarity; //lacunarity
-		amp *= 1.0 / lacunarity; //gain
+	for( int i = 0; i < 64; i++ ) {
+        if (i < octaves)
+        {
+            result += cnoise( v ) * amp;
+            v.x *= lacunarity; v.y *= lacunarity; //lacunarity
+            amp *= 1.0 / lacunarity; //gain
+        }
+        else break;
 	}
     
 	return result;
@@ -129,6 +133,6 @@ float fbm( vec2 v, int mOctaves, float lacunarity )
 //generate basic displacement map
 void main()
 {
-	float d = amplitude * fbm( vUV + vec2(time, 0.0), octaves, lacunarity);
+	float d = mAmplitude * fbm( vUV + vec2(mTime, 0.0), mOctaves, mLacunarity);
 	gl_FragColor = vec4( d, d, d, 1.0 );
 }
