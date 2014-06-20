@@ -319,7 +319,7 @@ jQuery(document).ready(function($) {
     }
     
     function renderDMap() {
-        renderer.render( sceneD, cameraO, textureD, true );
+        renderer.render( sceneD, cameraO, textureD, true ); //last parameter force-clear the buffer, regardless of autoclear
     }
     
     function renderNMap() {
@@ -338,15 +338,6 @@ jQuery(document).ready(function($) {
         renderer.render(scene, camera);
         controls.update();
         updateUniforms();
-        rotateObject();
-    }
-    
-    function rotateObject() {
-        var curTime = new Date();
-        var runTime = (curTime.getTime() - initTime);
-        var rotation = runTime * 0.001 % 360;
-        object.rotation.set(rotation, 0, 0);
-        
     }
 
     function updateUniforms()
@@ -364,7 +355,6 @@ jQuery(document).ready(function($) {
         //console.log( GUI.color[0] * (1.0 / 255.0), GUI.color[1] * (1.0 / 255.0), GUI.color[2] * (1.0 / 255.0) );
         
         //displacement map
-        //uniformsD.mTexture
         uniformsD.mAmplitude.value = GUI.amplitudeD;
         uniformsD.mOctaves.value = GUI.octaves;
         uniformsD.mLacunarity.value = GUI.lacunarity;
