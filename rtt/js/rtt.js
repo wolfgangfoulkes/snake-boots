@@ -293,7 +293,7 @@ jQuery(document).ready(function($) {
         // set up uniforms for shader
         uniforms = {
             mColor: { type: "v3", value: new THREE.Vector3(GUI.color[0], GUI.color[1], GUI.color[2]) },
-            mTextureD: { type: "t", value: new THREE.Texture },
+            mTextureD: { type: "t", value: textureD },
             mTextureN: { type: "t", value: textureN },
             mTexture: { type: "t", value: textureOBJ },
             mAlpha: { type: "f", value: GUI.opacity }
@@ -303,6 +303,7 @@ jQuery(document).ready(function($) {
                                                     uniforms: uniforms,
                                                     vertexShader: shaders.tex.vertex,
                                                     fragmentShader: shaders.tex.fragment,
+                                                    blending: THREE.AdditiveBlending,
                                                     transparent: true
                                                 });
          
