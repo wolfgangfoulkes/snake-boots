@@ -18,20 +18,13 @@ varying vec3 vNormal;
 varying mat3 vNormalMatrix;
 varying vec2 vUV;
 
-uniform vec3 mColor;
-
-uniform float mAlpha;
-uniform float mAmplitude;
-
-uniform sampler2D mTexture;
 uniform sampler2D mTextureD;
-uniform sampler2D mTextureN;
  
 void main() {
 
 
     // lookup displacement in map
-	float displacement = texture2D( mTextureD, uv ).r; //* mAmplitude
+	float displacement = texture2D( mTextureD, uv ).r;
 
     // now take the vertex and displace it along its normal
 	vec3 V = position; //use to displace gl_position (position + (normal * displacement))

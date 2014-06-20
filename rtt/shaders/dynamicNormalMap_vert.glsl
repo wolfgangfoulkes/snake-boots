@@ -18,9 +18,6 @@
 
 varying vec2 vUV;
 
-uniform sampler2D mTexture;
-uniform float mAmplitude;
-
 void main()
 {
 	//pass position and texture coordinate on to the fragment shader

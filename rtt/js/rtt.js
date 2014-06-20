@@ -86,7 +86,7 @@ jQuery(document).ready(function($) {
         gui.addColor(GUI, "color");
         gui.add(GUI, "opacity").min(0.0).max(1.0);
         gui.add(GUI, "amplitudeN").min(1.0/16.0).max(16.0);
-        gui.add(GUI, "amplitudeD").min(1.0/16.0).max(16.0);
+        gui.add(GUI, "amplitudeD").min(1.0/16.0).max(16.0); //best range is 0-1, but I leave this to test the normal-map.
         gui.add(GUI, "octaves").min(1).max(8).step(1);
         gui.add(GUI, "lacunarity").min(1.0).max(16.0);
         //can save data too. lookintoit.
@@ -102,13 +102,7 @@ jQuery(document).ready(function($) {
         width = $container.width();
         height = $container.height();
         
-        scene = new THREE.Scene();
-        sceneD = new THREE.Scene();
-        sceneN = new THREE.Scene();
         
-        textureD = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } );
-        textureN = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } );
-
         // Create a renderer and add it to the DOM.
         renderer = new THREE.WebGLRenderer({antialias:true});
         renderer.setSize(width, height);
@@ -120,45 +114,47 @@ jQuery(document).ready(function($) {
         gl.getExtension('OES_standard_derivatives');
         */
         $container.append(renderer.domElement);
-     
+        
         //add custom callback to window.resize
         $(window).resize(callbacks.windowResize);
+        
+        //initialize three scenes
+        scene = new THREE.Scene();
+        sceneD = new THREE.Scene();
+        sceneN = new THREE.Scene();
+        
+        //initialize FBO textures
+        textureD = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } );
+        textureN = new THREE.WebGLRenderTarget( width, height, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat } );
 
         // Create a camera, zoom it out from the model a bit, and add it to the scene.
-        camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 20000);
+        camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
         camera.position.set(0,0,100);
         scene.add(camera);
         
+        //create an orthographic camera for rendering to texture
         cameraO = new THREE.OrthographicCamera( width * -.5, width * .5, height * .5, height * -.5, -10000, 10000 );
 		cameraO.position.z = 100;
-        scene.add(cameraO);
         sceneN.add(cameraO);
         sceneD.add(cameraO);
 
-        // Set the background color of the scene.
-        //renderer.setClearColor(new THREE.Color(0xFF0000));
 
         // Create a light, set its position, and add it to the scene.
         var light = new THREE.PointLight(0xffffff);
         light.position.set(-100,200,100);
         scene.add(light);
-        
-        var lightN = new THREE.DirectionalLight( 0xffffff );
-        lightN.position.set( 0, 0, 1.0 ).normalize();
-        sceneN.add( lightN );
-
-        lightN = new THREE.DirectionalLight( 0xffaaaa, 1.5 );
-        lightN.position.set( 0, 0, -1.0 ).normalize();
-        sceneN.add( lightN );
-        
-        initDMap();
-        renderDMap();
-        initNMap();
-        renderNMap();
 
         // Add OrbitControls so that we can pan around with the mouse.
         controls = new THREE.OrbitControls(camera, renderer.domElement);
-     
+        
+        initDMap();
+        initNMap();
+        
+        loadResources();
+    }
+    
+    function loadResources() //maybe do this after shaders, then init scene.
+    {
         var manager = new THREE.LoadingManager();
         manager.onProgress = function ( item, loaded, total ) {
             console.log( item, loaded, total );
@@ -276,7 +272,7 @@ jQuery(document).ready(function($) {
         materialN = new THREE.ShaderMaterial({
                                                     uniforms: uniformsN,
                                                     vertexShader: shaders.mapN.vertex,
-                                                    fragmentShader: shaders.mapN.fragment
+                                                    fragmentShader: shaders.mapN.fragment,
                                                 });
         
         var plane = new THREE.PlaneGeometry( width, height );
@@ -304,7 +300,8 @@ jQuery(document).ready(function($) {
                                                     vertexShader: shaders.tex.vertex,
                                                     fragmentShader: shaders.tex.fragment,
                                                     blending: THREE.AdditiveBlending,
-                                                    transparent: true
+                                                    transparent: true,
+                                                    depthTest: false
                                                 });
          
         object.traverse(function (child) {
@@ -334,15 +331,22 @@ jQuery(document).ready(function($) {
         // Read more about requestAnimationFrame at http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
         requestAnimationFrame(render);
 
-        renderer.autoClear = false;
         // Render the scene
         renderNMap();
         renderDMap();
-        renderer.autoClear = true;
         renderer.setClearColor(new THREE.Color(0xFF0000));
         renderer.render(scene, camera);
         controls.update();
         updateUniforms();
+        rotateObject();
+    }
+    
+    function rotateObject() {
+        var curTime = new Date();
+        var runTime = (curTime.getTime() - initTime);
+        var rotation = runTime * 0.001 % 360;
+        object.rotation.set(rotation, 0, 0);
+        
     }
 
     function updateUniforms()
@@ -360,6 +364,7 @@ jQuery(document).ready(function($) {
         //console.log( GUI.color[0] * (1.0 / 255.0), GUI.color[1] * (1.0 / 255.0), GUI.color[2] * (1.0 / 255.0) );
         
         //displacement map
+        //uniformsD.mTexture
         uniformsD.mAmplitude.value = GUI.amplitudeD;
         uniformsD.mOctaves.value = GUI.octaves;
         uniformsD.mLacunarity.value = GUI.lacunarity;
