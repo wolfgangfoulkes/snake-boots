@@ -19,15 +19,20 @@ varying mat3 vNormalMatrix;
 varying vec2 vUV;
 
 uniform sampler2D mTextureD;
+uniform float mAmplitudeD;
  
 void main() {
 
 
     // lookup displacement in map
-	float displacement = texture2D( mTextureD, uv ).r;
+	float displacement = texture2D( mTextureD, uv ).r; //not accounting for amplitude, doe
+    displacement -= 0.5;
+    displacement *= mAmplitudeD;
 
     // now take the vertex and displace it along its normal
 	vec3 V = position; //use to displace gl_position (position + (normal * displacement))
+    //position is different from gl_Vertex in the C++ implementation
+    //range of position is -0.5 - 0.5
 	V.x += normal.x * displacement;
 	V.y += normal.y * displacement;
 	V.z += normal.z * displacement;
@@ -35,7 +40,7 @@ void main() {
     vUV = uv; //pass the texture coordinate to the frag shader
     vNormal = normal; //pass surface normal to frag shader.
     vNormalMatrix = normalMatrix; //pass normal matrix along (better way than this? do all in Vert?)
- 
+    
     gl_Position = projectionMatrix * modelViewMatrix * vec4(V, 1.0);
     
     //gl_TexCoord[0] = gl_MultiTexCoord0; can we use reg'lar vars?

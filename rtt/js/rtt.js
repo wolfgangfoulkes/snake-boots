@@ -48,8 +48,8 @@ jQuery(document).ready(function($) {
     {
         this.opacity = 1.0;
         this.color = [255.0, 255.0, 255.0];
-        this.amplitudeD = 1.0;
-        this.amplitudeN = 4.0;
+        this.amplitudeD = 0.1;
+        this.amplitudeN = 100.0;
         this.octaves = 3;
         this.lacunarity = 2.0;
         this.rate; //coefficient for time
@@ -84,9 +84,9 @@ jQuery(document).ready(function($) {
         var $gui	= $("#gui-container");
         
         gui.addColor(GUI, "color");
-        gui.add(GUI, "opacity").min(0.0).max(1.0);
-        gui.add(GUI, "amplitudeN").min(1.0/16.0).max(16.0);
-        gui.add(GUI, "amplitudeD").min(1.0/16.0).max(16.0); //best range is 0-1, but I leave this to test the normal-map.
+        gui.add(GUI, "opacity").min(0.0).max(1.0).step(0.01);
+        gui.add(GUI, "amplitudeN").min(1.0).max(200.0);
+        gui.add(GUI, "amplitudeD").min(0.0).max(0.5).step(0.01); //best range is 0-1, but I leave this to test the normal-map.
         gui.add(GUI, "octaves").min(1).max(8).step(1);
         gui.add(GUI, "lacunarity").min(1.0).max(16.0);
         //can save data too. lookintoit.
@@ -246,7 +246,6 @@ jQuery(document).ready(function($) {
     
         uniformsD = {
             mTime: { type: "f", value: runTime * 0.001 },
-            mAmplitude: { type: "f", value: GUI.amplitudeD },
             mLacunarity: { type: "f", value: GUI.lacunarity },
             mOctaves: { type: "i", value: GUI.octaves }
         };
@@ -266,7 +265,8 @@ jQuery(document).ready(function($) {
     function initNMap() {
         uniformsN = {
             mTexture: { type: "t", value: textureD },
-            mAmplitude: { type: "f", value: GUI.amplitudeN }
+            mAmplitudeN: { type: "f", value: 8.0 },
+            mAmplitudeD: { type: "f", value: GUI.amplitudeN }
         };
         
         materialN = new THREE.ShaderMaterial({
@@ -292,6 +292,7 @@ jQuery(document).ready(function($) {
             mTextureD: { type: "t", value: textureD },
             mTextureN: { type: "t", value: textureN },
             mTexture: { type: "t", value: textureOBJ },
+            mAmplitudeD: { type: "f", value: GUI.amplitudeD },
             mAlpha: { type: "f", value: GUI.opacity }
         };
 
@@ -349,13 +350,12 @@ jQuery(document).ready(function($) {
         uniforms.mColor.value.y = GUI.color[1] * (1.0 / 255.0);
         uniforms.mColor.value.z = GUI.color[2] * (1.0 / 255.0);
         uniforms.mAlpha.value = GUI.opacity;
+        uniforms.mAmplitudeD.value = GUI.amplitudeD;
         
-        uniforms.mColor.needsUpdate = true;
-        uniforms.mAlpha.needsUpdate = true;
+        uniforms.needsUpdate = true;
         //console.log( GUI.color[0] * (1.0 / 255.0), GUI.color[1] * (1.0 / 255.0), GUI.color[2] * (1.0 / 255.0) );
         
         //displacement map
-        uniformsD.mAmplitude.value = GUI.amplitudeD;
         uniformsD.mOctaves.value = GUI.octaves;
         uniformsD.mLacunarity.value = GUI.lacunarity;
         uniformsD.mTime.value = runTime * 0.001;
@@ -364,7 +364,7 @@ jQuery(document).ready(function($) {
         console.log(initTime, runTime * 0.001);
         
         //normal map
-        uniformsN.mAmplitude.value = GUI.amplitudeN;
+        uniformsN.mAmplitudeD.value = GUI.amplitudeN;
         uniformsN.needsUpdate = true;
     }
      

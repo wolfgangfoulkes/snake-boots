@@ -1,7 +1,6 @@
 varying vec2 vUV;
 
 uniform float mTime;
-uniform float mAmplitude;
 uniform float mLacunarity;
 uniform int mOctaves;
 
@@ -133,6 +132,7 @@ float fbm( vec2 v, int octaves, float lacunarity )
 //generate basic displacement map
 void main()
 {
-	float d = mAmplitude * fbm( vUV + vec2(mTime, 0.0), mOctaves, mLacunarity);
+	float d = fbm( vUV + vec2(mTime, 0.0), mOctaves, mLacunarity ); //range of fbm is -0.5 - 0.5
+    d += 0.5; //0-2
 	gl_FragColor = vec4( d, d, d, 1.0 );
 }
