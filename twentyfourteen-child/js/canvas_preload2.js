@@ -9,9 +9,9 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
     also, checking the shaders by name would be similarly helpful */
 
     
-    GALLERY.scripts.displayOBJ = new function() {
+    GALLERY.scripts.displayOBJ2 = new function () {
     /*PUBLIC SCOPE IN FUNCTION*/
-        var name = "displayOBJ",
+        var name = "displayOBJ2",
         shaders = GALLERY.shaders || {},
         localpath = GALLERY.dir,
         
@@ -27,7 +27,6 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
         height,
 
         OBJLoaded = false;
-        this.active = false;
 
         /*****GUI
         */
@@ -109,7 +108,7 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
             scene.add(camera);
 
             // Set the background color of the scene.
-            renderer.setClearColor(new THREE.Color(0x000666));
+            renderer.setClearColor(new THREE.Color(0x666000));
 
             // Create a light, set its position, and add it to the scene.
             var light = new THREE.PointLight(0x172305);

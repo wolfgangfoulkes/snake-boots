@@ -14,7 +14,8 @@ $dir = get_stylesheet_directory_uri();
         </div>
         <span data-type="glsl/vertex" data-name="tex" data-src="<?php echo $dir . "/shaders/texVert.glsl"?>"> </span>
         <span data-type="glsl/fragment" data-name="tex" data-src= "<?php echo $dir . "/shaders/texFrag.glsl"?>"> </span>
-        <span class="javascript" data-name = "canvas_preload" data-src = "<?php echo $dir . "/js/canvas_preload.js" ?>"></span>
+        <span class="javascript" data-name = "displayOBJ" data-src = "<?php echo $dir . "/js/canvas_preload.js" ?>"></span>
+        <?php /*note that incorrect name/src pairing will still load if script with correct name is on page*/ ?>
     </div>
 
     <div class="lightbox-cell">
@@ -23,7 +24,7 @@ $dir = get_stylesheet_directory_uri();
         </div>
         <span data-type="glsl/vertex" data-name="tex" data-src="<?php echo $dir . "/shaders/texVert.glsl"?>"> </span>
         <span data-type="glsl/fragment" data-name="tex" data-src= "<?php echo $dir . "/shaders/texFrag.glsl"?>"> </span>
-        <span class="javascript" data-name = "canvas_preload" data-src = "<?php echo $dir . "/js/canvas_preload.js" ?>"></span>
+        <span class="javascript" data-name = "displayOBJ2" data-src = "<?php echo $dir . "/js/canvas_preload2.js" ?>"></span>
     </div>
 
     <div class="lightbox-cell">
@@ -32,7 +33,7 @@ $dir = get_stylesheet_directory_uri();
         </div>
         <span data-type="glsl/vertex" data-name="tex" data-src="<?php echo $dir . "/shaders/texVert.glsl"?>"> </span>
         <span data-type="glsl/fragment" data-name="tex" data-src= "<?php echo $dir . "/shaders/texFrag.glsl"?>"> </span>
-        <span class="javascript" data-src = "<?php echo $dir . "/js/canvas_preload.js" ?>"></span>
+        <span class="javascript" data-name = "displayOBJ" data-src = "<?php echo $dir . "/js/canvas_preload.js" ?>"></span>
     </div>
 
     <div class="lightbox-cell">
@@ -41,7 +42,7 @@ $dir = get_stylesheet_directory_uri();
         </div>
         <span data-type="glsl/vertex" data-name="tex" data-src="<?php echo $dir . "/shaders/texVert.glsl"?>"> </span>
         <span data-type="glsl/fragment" data-name="tex" data-src= "<?php echo $dir . "/shaders/texFrag.glsl"?>"> </span>
-        <span class="javascript" data-src = "<?php echo $dir . "/js/canvas_preload.js" ?>"></span>
+        <span class="javascript" data-name = "displayOBJ2" data-src = "<?php echo $dir . "/js/canvas_preload2.js" ?>"></span>
     </div>
 </div>
 

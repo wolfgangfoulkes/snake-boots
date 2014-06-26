@@ -207,7 +207,7 @@ jQuery(document).ready(function($){
                 //empty title
                 $(".lb_title").html("");
                 
-                for (var i in GALLERY.scripts) {GALLERY.scripts[i].active = false;} //this is how this loop works. i.active is incorrect. i is the current key
+                for (var i in GALLERY.scripts) {i.active = false;}
                 $(".lb_canvas_inner").detach();
                 $(".gui_inner").detach();
                 });

@@ -25,13 +25,12 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
         //window size
         width,
         height,
-
-        OBJLoaded = false;
-        this.active = false;
+        
+        uniforms;
 
         /*****GUI
         */
-        var gui_par = function ()
+        var gui_par = function()
         {
             this.list = 0;
             this.opacity = 1.0;
@@ -39,7 +38,8 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
         };
         var GUI = new gui_par();
 
-        var uniforms;
+        this.loaded = false;
+        this.active = false;
 
         /*****CALLBACKS
         * Our internal callbacks object - a neat
@@ -62,13 +62,22 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
         };
         
         this.init = function() { //storing function as property so it can be called externally
-            console.log(name, ".init() called");
+            if (!(this.loaded)) { console.log(name, " is not loaded yet", this.loaded); return; }
             GALLERY.scripts[name].active = true;
-            initGUI();
-            initScene();
+            
+            initGUI(function(){
+                console.log("initialized GUI");
+                initScene(function() {
+                    console.log("initialized scene");
+                    initObject(function(){
+                        console.log("initialized object");
+                        checkAnimate();
+                        });
+                    });
+                });
         };
 
-        function initGUI()
+        function initGUI(callback)
         {
             console.log("initGUI");
             var gui = new dat.GUI({autoPlace: false});
@@ -82,12 +91,12 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
             gui.add(GUI, "opacity").min(0.0).max(1.0);
             //can save data too. lookintoit.
             $gui.append(gui.domElement);
+            callback();
         }
 
 
         // Sets up the scene.
-        function initScene()
-        {
+        function initScene(callback) {
             // Create the scene and set the scene size.
             $container = $("#container");
             scene = new THREE.Scene();
@@ -109,7 +118,7 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
             scene.add(camera);
 
             // Set the background color of the scene.
-            renderer.setClearColor(new THREE.Color(0x000666));
+            renderer.setClearColor(new THREE.Color(0x002666));
 
             // Create a light, set its position, and add it to the scene.
             var light = new THREE.PointLight(0x172305);
@@ -118,7 +127,10 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
 
             // Add OrbitControls so that we can pan around with the mouse.
             controls = new THREE.OrbitControls(camera, renderer.domElement);
-         
+            callback();
+        }
+        
+        function loadOBJ(callback) {
             var manager = new THREE.LoadingManager();
             manager.onProgress = function ( item, loaded, total ) {
                 console.log( item, loaded, total );
@@ -127,14 +139,11 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
             var loaderOBJ = new THREE.OBJLoader(manager);
             loaderOBJ.load(localpath + "/models/male02.obj", function(obj) {
                     object = obj;
-                    OBJLoaded = true;
-                    if (initObject()) { checkAnimate(); } //fails if IMG and OBJ aren't uploaded
-            });
+                    callback();
+                    });
         }
          
-        function initObject() {
-            if ( !(OBJLoaded) ) { return false; }
-            
+        function initObject(callback) {
             texture = new THREE.Texture(GALLERY.images["uv_grid"]);
             texture.needsUpdate = true;
             
@@ -159,8 +168,7 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
             });
 
             scene.add(object);
-
-            return true;
+            callback();
         }
          
          // Renders the scene and updates the render as needed.
@@ -203,20 +211,12 @@ jQuery(document).ready(function($) { //enclosure, might be easier to use the no-
             //could use a function to clean up.
             //would need to create more objects (e.g. "inner" objects)
         }
-
-         
-        /* for updating vertices
-        // set the geometry to dynamic
-        // so that it allow updates
-        sphere.geometry.dynamic = true;
-
-        // changes to the vertices
-        sphere.geometry.verticesNeedUpdate = true;
-
-        // changes to the normals
-        sphere.geometry.normalsNeedUpdate = true;
-        */
         
-        console.log(name, " loaded");
+        //initialization for the function object.
+            loadOBJ(function(){
+                console.log("loaded object");
+                GALLERY.scripts.displayOBJ.loaded = true; //"this" didn't work
+            });
     };
 });
+
