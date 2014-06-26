@@ -287,26 +287,41 @@ jQuery(document).ready(function($) {
         if ( !(OBJLoaded && IMGLoaded) ) { return false; }
         
         // set up uniforms for shader
-        uniforms = {
-            mColor: { type: "v3", value: new THREE.Vector3(GUI.color[0], GUI.color[1], GUI.color[2]) },
-            mTextureD: { type: "t", value: textureD },
-            mTextureN: { type: "t", value: textureN },
-            mTexture: { type: "t", value: textureOBJ },
-            mAmplitudeD: { type: "f", value: GUI.amplitudeD },
-            mAlpha: { type: "f", value: GUI.opacity }
-        };
-
+        // UniformsLib is here https://github.com/mrdoob/three.js/blob/master/src/renderers/shaders/UniformsLib.js
+        uniforms = THREE.UniformsUtils.merge([
+            THREE.UniformsLib['lights'],
+            {
+                
+                mTextureD: { type: "t", value: null },
+                mTextureN: { type: "t", value: null },
+                mTexture: { type: "t", value: null },
+                
+                mLightPosition: { type: "v3", value: new THREE.Vector3(-100, 200, 300) }, //could do light.position, but the shader don't use the light anyway
+                
+                mAmplitudeD: { type: "f", value: GUI.amplitudeD },
+                mColor: { type: "v3", value: new THREE.Vector3(GUI.color[0], GUI.color[1], GUI.color[2]) },
+                mAlpha: { type: "f", value: GUI.opacity }
+            }
+        ]);
+        
+        // THREE.UniformsUtils.merge() call THREE.clone() on each
+        // uniform. We don't want our textures to be duplicated, so:
+        uniforms.mTextureD.value = textureD;
+        uniforms.mTextureN.value = textureN;
+        uniforms.mTexture.value = textureOBJ;
+    
         material = new THREE.ShaderMaterial({
                                                     uniforms: uniforms,
-                                                    vertexShader: shaders.tex.vertex,
-                                                    fragmentShader: shaders.tex.fragment,
+                                                    vertexShader: shaders.bumpPhong.vertex,
+                                                    fragmentShader: shaders.bumpPhong.fragment,
                                                     blending: THREE.AdditiveBlending,
                                                     transparent: true,
+                                                    lights: true,
                                                     depthTest: false
                                                 });
-         
         object.traverse(function (child) {
             if (child instanceof THREE.Mesh) { //complex model has many children
+                child.geometry.computeTangents(); //necessary for shader
                 child.material = material;
             }
         });
@@ -360,8 +375,6 @@ jQuery(document).ready(function($) {
         uniformsD.mLacunarity.value = GUI.lacunarity;
         uniformsD.mTime.value = runTime * 0.001;
         uniformsD.needsUpdate = true;
-        
-        console.log(initTime, runTime * 0.001);
         
         //normal map
         uniformsN.mAmplitudeD.value = GUI.amplitudeN;
