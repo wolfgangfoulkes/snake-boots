@@ -119,7 +119,7 @@ jQuery(document).ready(function($) {
         gui.add(GUI, "amplitudeN").min(1.0).max(32.0);
         gui.add(GUI, "amplitudeD").min(0.0).max(0.5).step(0.01); //best range is 0-1, but I leave this to test the normal-map.
         gui.add(GUI, "octaves").min(1).max(8).step(1);
-        gui.add(GUI, "lacunarity").min(1.0).max(16.0);
+        gui.add(GUI, "lacunarity").min(1.0).max(16.0); //
         //can save data too. lookintoit.
         $gui.append(gui.domElement);
     }
