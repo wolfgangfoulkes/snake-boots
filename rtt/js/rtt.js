@@ -314,7 +314,7 @@ jQuery(document).ready(function($) {
                                                     uniforms: uniforms,
                                                     vertexShader: shaders.bumpPhong.vertex,
                                                     fragmentShader: shaders.bumpPhong.fragment,
-                                                    blending: THREE.AdditiveBlending,
+                                                    //blending: THREE.AdditiveBlending,
                                                     transparent: true,
                                                     lights: true,
                                                     depthTest: false

@@ -24,6 +24,8 @@ attribute vec4 tangent;
 varying mat3 vTBN;
 varying vec2 vUV;
 varying vec4 vVecPos;
+varying vec3 lightVec;
+varying vec3 eyeVec;
 
 uniform sampler2D mTextureD;
 uniform float mAmplitudeD;
@@ -38,16 +40,29 @@ uniform float pointLightDistance[MAX_POINT_LIGHTS];
 
 void main() {
 
+    /*****LIGHTING PARAMS*****/
     // Create the Tangent-Binormal-Normal Matrix used for transforming
     // coordinates from object space to tangent space
     vec3 aNormal = normalize(normalMatrix * normal);
     vec3 aTangent = normalize(normalMatrix * tangent.xyz);
-    vec3 aBinormal = normalize(cross(aNormal, aTangent) * tangent.w);
+    vec3 aBinormal = normalize(cross(aNormal, aTangent));
     vTBN = mat3(aTangent, aBinormal, aNormal);
+    
+    vec4 tmpVecPos = modelViewMatrix * vec4(position, 1.0); //!might needa use V!
+    vec3 tmpL = pointLightPosition[0] - tmpVecPos.xyz;
+    vec3 tmpE = -tmpVecPos.xyz;
+    vVecPos = normalize(tmpVecPos);
+    
+    //transform light and eye vectors into tangent space?
+    //without matric multiplication, lightVec.x, y, z would be dot product of tmpL and t, b, n
+    lightVec = normalize(tmpL * vTBN);
+    eyeVec = normalize(tmpE * vTBN);
 
+    /*****VERTEX DISPLACEMENT*****/
     // lookup displacement in map
 	float displacement = texture2D( mTextureD, uv ).r; //not accounting for amplitude, doe
     displacement -= 0.5;
+    displacement *= 2.0;
     displacement *= mAmplitudeD;
 
     // now take the vertex and displace it along its normal
@@ -58,11 +73,8 @@ void main() {
 	V.y += normal.y * displacement;
 	V.z += normal.z * displacement;
     
-    vVecPos = modelViewMatrix * vec4(position, 1.0); //!might needa use V!
-    
     vUV = uv; //pass the texture coordinate to the frag shader
     
     gl_Position = projectionMatrix * modelViewMatrix * vec4(V, 1.0);
-    
     
 }
