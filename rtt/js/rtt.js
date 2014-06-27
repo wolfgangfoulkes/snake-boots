@@ -9,6 +9,7 @@ jQuery(document).ready(function($) {
     
     width,
     height,
+    mouse,
     
     scene,
     sceneD,
@@ -16,12 +17,14 @@ jQuery(document).ready(function($) {
     
     textureD,
     textureN,
+    textureNMap,
     textureOBJ,
     
     camera,
     cameraO,
     
     renderer,
+    projector,
     
     object,
     quadN,
@@ -39,8 +42,12 @@ jQuery(document).ready(function($) {
     shaders = {},
 
     OBJLoaded = false,
-    IMGLoaded = false,
+    IMG0Loaded = false,
+    IMG1Loaded = false,
     localpath = "/Users/wolfgag/snake-boots/rtt";
+    
+    var active = false;
+    mouse = new THREE.Vector3(0.0, 0.0, 0.0);
 
     /*****GUI
     */
@@ -65,15 +72,40 @@ jQuery(document).ready(function($) {
     callbacks =
     {
         windowResize: function() {
-            if(renderer) {
-                width			= $container.width();
-                height			= $container.height();
-                camera.aspect 	= width / height,
-                renderer.setSize(width, height);
+            if(!renderer) { return; }
+            width			= $container.width();
+            height			= $container.height();
+            camera.aspect 	= width / height,
+            renderer.setSize(width, height);
 
-                camera.updateProjectionMatrix();
-                console.log("width:", width,"height", height)
-            }
+            camera.updateProjectionMatrix();
+            console.log("width:", width,"height", height)
+        },
+        
+        mousePos: function() {
+            if (!active) { return; }
+            
+            var vector = new THREE.Vector3( ( event.clientX / $container.width() ) * 2.0 - 1.0, -( event.clientY / $container.height() ) * 2.0 + 1.0, 100 ); //0-1 into -1-1
+            //0.0 would be 0.5 if we wanted to do below
+
+            projector.unprojectVector( vector, camera );
+            
+            var dir = vector.clone().sub( camera.position );
+            offset = dir.clone().multiplyScalar(-100000.0);
+            mouse = camera.position.clone().add(offset);
+
+            //var distance = - camera.position.z / dir.z;
+
+            //var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );
+            //The variable pos is the position of the point in 3D space, "under the mouse", and in the plane z=0. I don't need that, doe.
+        },
+        mouseClick: function() {
+            if (!active) { return; }
+            
+            console.log("offset", offset);
+            console.log("camera", camera.position);
+            console.log("mouse", mouse);
+
         }
     };
 
@@ -117,6 +149,10 @@ jQuery(document).ready(function($) {
         
         //add custom callback to window.resize
         $(window).resize(callbacks.windowResize);
+        $(window).mousemove(callbacks.mousePos);
+        $(window).click(callbacks.mouseClick);
+        
+        projector = new THREE.Projector();
         
         //initialize three scenes
         scene = new THREE.Scene();
@@ -137,11 +173,12 @@ jQuery(document).ready(function($) {
 		cameraO.position.z = 100;
         sceneN.add(cameraO);
         sceneD.add(cameraO);
-
+        
+        mouse = new THREE.Vector3(0.0, 0.0, 0.0);
 
         // Create a light, set its position, and add it to the scene.
         var light = new THREE.PointLight(0xffffff);
-        light.position.set(-100,200,100);
+        light.position.set(-1000,10,0);
         scene.add(light);
 
         // Add OrbitControls so that we can pan around with the mouse.
@@ -164,7 +201,14 @@ jQuery(document).ready(function($) {
         loaderIMG.load(localpath + "/images/Blackened-Chicken-Pre-Cooked.jpg", function(image) {
             textureOBJ = new THREE.Texture(image);
             textureOBJ.needsUpdate = true;
-            IMGLoaded = true;
+            IMG0Loaded = true;
+            if (initObject()) { checkRender(); } //fails if IMG and OBJ aren't uploaded
+            }
+        );
+        loaderIMG.load(localpath + "/images/normal_pillow.png", function(image) {
+            textureNMap = new THREE.Texture(image);
+            textureNMap.needsUpdate = true;
+            IMG1Loaded = true;
             if (initObject()) { checkRender(); } //fails if IMG and OBJ aren't uploaded
             }
         );
@@ -284,7 +328,7 @@ jQuery(document).ready(function($) {
     
      
     function initObject() {
-        if ( !(OBJLoaded && IMGLoaded) ) { return false; }
+        if ( !(OBJLoaded && IMG0Loaded && IMG1Loaded) ) { return false; }
         
         // set up uniforms for shader
         // UniformsLib is here https://github.com/mrdoob/three.js/blob/master/src/renderers/shaders/UniformsLib.js
@@ -296,7 +340,7 @@ jQuery(document).ready(function($) {
                 mTextureN: { type: "t", value: null },
                 mTexture: { type: "t", value: null },
                 
-                mLightPosition: { type: "v3", value: new THREE.Vector3(-100, 200, 300) }, //could do light.position, but the shader don't use the light anyway
+                uLightPosition: { type: "v3", value: mouse }, //could do light.position, but the shader don't use the light anyway
                 
                 mAmplitudeD: { type: "f", value: GUI.amplitudeD },
                 mColor: { type: "v3", value: new THREE.Vector3(GUI.color[0], GUI.color[1], GUI.color[2]) },
@@ -366,9 +410,9 @@ jQuery(document).ready(function($) {
         uniforms.mColor.value.z = GUI.color[2] * (1.0 / 255.0);
         uniforms.mAlpha.value = GUI.opacity;
         uniforms.mAmplitudeD.value = GUI.amplitudeD;
+        uniforms.uLightPosition.value = mouse;
         
         uniforms.needsUpdate = true;
-        //console.log( GUI.color[0] * (1.0 / 255.0), GUI.color[1] * (1.0 / 255.0), GUI.color[2] * (1.0 / 255.0) );
         
         //displacement map
         uniformsD.mOctaves.value = GUI.octaves;
@@ -388,6 +432,7 @@ jQuery(document).ready(function($) {
      
     function checkRender() {
         if ( !(object && renderer && scene) ) { return; }
+        active = true;
         render();
      }
 

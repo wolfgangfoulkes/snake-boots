@@ -133,6 +133,6 @@ float fbm( vec2 v, int octaves, float lacunarity )
 void main()
 {
 	float d = fbm( vUV + vec2(mTime, 0.0), mOctaves, mLacunarity ); //range of fbm is -0.5 - 0.5
-    d += 0.5; //0-2
+    d += 0.5; //0-1
 	gl_FragColor = vec4( d, d, d, 1.0 );
 }

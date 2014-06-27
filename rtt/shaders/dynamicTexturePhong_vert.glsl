@@ -23,20 +23,18 @@ attribute vec4 tangent;
 
 varying mat3 vTBN;
 varying vec2 vUV;
-varying vec4 vVecPos;
-varying vec3 lightVec;
+varying vec3 lightVec; //with multiple lights this is an array
 varying vec3 eyeVec;
 
 uniform sampler2D mTextureD;
 uniform float mAmplitudeD;
 
-//m for MINE
-uniform vec3 mLightPosition;
+uniform vec3 uLightPosition;
 
 //filled by THREE.js
-uniform vec3 pointLightColor[MAX_POINT_LIGHTS];
-uniform vec3 pointLightPosition[MAX_POINT_LIGHTS];
-uniform float pointLightDistance[MAX_POINT_LIGHTS];
+//uniform vec3 pointLightColor[MAX_POINT_LIGHTS];
+//uniform vec3 pointLightPosition[MAX_POINT_LIGHTS];
+//uniform float pointLightDistance[MAX_POINT_LIGHTS];
 
 void main() {
 
@@ -49,18 +47,25 @@ void main() {
     vTBN = mat3(aTangent, aBinormal, aNormal);
     
     vec4 tmpVecPos = modelViewMatrix * vec4(position, 1.0); //!might needa use V!
-    vec3 tmpL = pointLightPosition[0] - tmpVecPos.xyz;
+    vec3 tmpL = uLightPosition - tmpVecPos.xyz; //calculate this in a loop.
     vec3 tmpE = -tmpVecPos.xyz;
-    vVecPos = normalize(tmpVecPos);
     
     //transform light and eye vectors into tangent space?
-    //without matric multiplication, lightVec.x, y, z would be dot product of tmpL and t, b, n
-    lightVec = normalize(tmpL * vTBN);
-    eyeVec = normalize(tmpE * vTBN);
+    //could this just be multiplication by vTBN? pretty sure that was the same.
+    lightVec.x = dot(tmpL, aTangent);
+    lightVec.y = dot(tmpL, aBinormal);
+    lightVec.z = dot(tmpL, aNormal);
+    lightVec = normalize(lightVec);
+    
+    eyeVec.x = dot(tmpE, aTangent);
+    eyeVec.y = dot(tmpE, aBinormal);
+    eyeVec.z = dot(tmpE, aNormal);
+    eyeVec = normalize(eyeVec);
 
     /*****VERTEX DISPLACEMENT*****/
     // lookup displacement in map
 	float displacement = texture2D( mTextureD, uv ).r; //not accounting for amplitude, doe
+    //convert to -1-1
     displacement -= 0.5;
     displacement *= 2.0;
     displacement *= mAmplitudeD;
