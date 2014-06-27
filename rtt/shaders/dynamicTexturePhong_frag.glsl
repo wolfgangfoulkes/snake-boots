@@ -49,5 +49,5 @@ void main()
     vec3 lit = (dry * ambient) + (dry * diffuse) + vec3(specular);
     //in GL we would multiply each by the colors of material and light
 
-    gl_FragColor = vec4(lit, mAlpha);
+    gl_FragColor = vec4(lit * mColor, mAlpha);
 }

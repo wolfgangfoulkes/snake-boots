@@ -47,8 +47,7 @@ jQuery(document).ready(function($) {
     localpath = "/Users/wolfgag/snake-boots/rtt";
     
     var active = false;
-    mouse = new THREE.Vector3(0.0, 0.0, 0.0);
-
+    
     /*****GUI
     */
     var gui_par = function ()
@@ -117,7 +116,7 @@ jQuery(document).ready(function($) {
         
         gui.addColor(GUI, "color");
         gui.add(GUI, "opacity").min(0.0).max(1.0).step(0.01);
-        gui.add(GUI, "amplitudeN").min(1.0).max(200.0);
+        gui.add(GUI, "amplitudeN").min(1.0).max(32.0);
         gui.add(GUI, "amplitudeD").min(0.0).max(0.5).step(0.01); //best range is 0-1, but I leave this to test the normal-map.
         gui.add(GUI, "octaves").min(1).max(8).step(1);
         gui.add(GUI, "lacunarity").min(1.0).max(16.0);
@@ -309,8 +308,7 @@ jQuery(document).ready(function($) {
     function initNMap() {
         uniformsN = {
             mTexture: { type: "t", value: textureD },
-            mAmplitudeN: { type: "f", value: 8.0 },
-            mAmplitudeD: { type: "f", value: GUI.amplitudeN }
+            mAmplitudeN: { type: "f", value: GUI.amplitudeN }
         };
         
         materialN = new THREE.ShaderMaterial({

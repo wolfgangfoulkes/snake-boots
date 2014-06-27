@@ -4,7 +4,6 @@ varying vec2 vUV;
 
 uniform sampler2D mTexture;
 uniform float mAmplitudeN;
-uniform float mAmplitudeD;
 
 float getDisplacement(float dx, float dy)
 {
@@ -12,7 +11,6 @@ float getDisplacement(float dx, float dy)
     //applying dFdx to a position on a surface returns the tangent to that surface
     displacement *= 2.0;
     displacement -= 1.0;
-    displacement *= mAmplitudeD; //scale by amplitude is this important? it does something fer sherr
     
     return displacement;
 }
@@ -24,6 +22,10 @@ void main()
 	fragNormal.z = -0.5 * ( getDisplacement(0.0, 1.0) - getDisplacement(0.0, -1.0) );
 	fragNormal.y = 1.0 / mAmplitudeN;
 	fragNormal = normalize(fragNormal); //might wanna put this stuff in 0-1
+    
+    fragNormal.x = (fragNormal.x + 1.0) / 2.0;
+    fragNormal.z = (fragNormal.z + 1.0) / 2.0;
+    fragNormal.y = (fragNormal.y + 1.0) / 2.0;
     
     gl_FragColor = vec4( fragNormal, 1.0 );
 }
