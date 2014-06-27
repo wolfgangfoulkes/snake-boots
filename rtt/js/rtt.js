@@ -419,7 +419,7 @@ jQuery(document).ready(function($) {
         uniformsD.needsUpdate = true;
         
         //normal map
-        uniformsN.mAmplitudeD.value = GUI.amplitudeN;
+        uniformsN.mAmplitudeN.value = GUI.amplitudeN;
         uniformsN.needsUpdate = true;
     }
      
