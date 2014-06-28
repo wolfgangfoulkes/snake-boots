@@ -14,8 +14,10 @@ varying vec3 eyeVec;
 //runtime control uniforms
 uniform vec3 mColor;
 uniform float mAlpha;
-uniform float mAmplitude;
-uniform float mBrightness;
+uniform float mAmbient;
+uniform float mDiffuse;
+uniform float mSpecular;
+uniform float mShininess;
 
 //m for MINE
 uniform vec3 uLightPosition;
@@ -41,13 +43,12 @@ void main()
     vec3 reflection = reflect(-lightVec, mapNormal);
 
     //these three would be done using an iterator for multiple lights and summed together for "lighting
-    float ambient = 1.0;
-    float diffuse = lambertFactor * 1.0; //1.0 will be diffuse amount
-    float specular = pow(max(dot(reflection, eyeVec), 0.0), 2.0) * 1.0; //2.0 is shininess, 1.0 is amount
-    //specular is fucked?
+    float ambient = mAmbient;
+    float diffuse = lambertFactor * mDiffuse; //1.0 will be diffuse amount
+    float specular = pow(max(dot(reflection, eyeVec), 0.0), mShininess) * mSpecular; //2.0 is shininess, 1.0 is amount
     
-    vec3 lit = (dry * ambient) + (dry * diffuse) + vec3(specular);
+    vec3 lit = (mColor * ambient) + (mColor * diffuse) + vec3(specular);
     //in GL we would multiply each by the colors of material and light
 
-    gl_FragColor = vec4(lit * mColor, mAlpha);
+    gl_FragColor = vec4(lit, mAlpha);
 }

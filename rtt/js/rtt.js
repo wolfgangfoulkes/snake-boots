@@ -54,6 +54,10 @@ jQuery(document).ready(function($) {
     {
         this.opacity = 1.0;
         this.color = [255.0, 255.0, 255.0];
+        this.ambient = 1.0;
+        this.diffuse = 1.0;
+        this.specular = 1.0;
+        this.shininess = 1.0;
         this.amplitudeD = 0.1;
         this.amplitudeN = 8.0;
         this.octaves = 3;
@@ -116,10 +120,14 @@ jQuery(document).ready(function($) {
         
         gui.addColor(GUI, "color");
         gui.add(GUI, "opacity").min(0.0).max(1.0).step(0.01);
-        gui.add(GUI, "amplitudeN").min(1.0).max(32.0);
+        gui.add(GUI, "amplitudeN").min(1.0).max(256.0).step(8.0);
         gui.add(GUI, "amplitudeD").min(0.0).max(0.5).step(0.01); //best range is 0-1, but I leave this to test the normal-map.
         gui.add(GUI, "octaves").min(1).max(8).step(1);
         gui.add(GUI, "lacunarity").min(1.0).max(16.0);
+        gui.add(GUI, "ambient").min(0.0).max(1.0);
+        gui.add(GUI, "diffuse").min(0.0).max(1.0);
+        gui.add(GUI, "specular").min(0.0).max(1.0);
+        gui.add(GUI, "shininess").min(1.0).max(8.0);
         //can save data too. lookintoit.
         $gui.append(gui.domElement);
     }
@@ -342,7 +350,11 @@ jQuery(document).ready(function($) {
                 
                 mAmplitudeD: { type: "f", value: GUI.amplitudeD },
                 mColor: { type: "v3", value: new THREE.Vector3(GUI.color[0], GUI.color[1], GUI.color[2]) },
-                mAlpha: { type: "f", value: GUI.opacity }
+                mAlpha: { type: "f", value: GUI.opacity },
+                mAmbient: { type: "f", value: GUI.ambient },
+                mDiffuse: { type: "f", value: GUI.diffuse },
+                mSpecular: { type: "f", value: GUI.specular },
+                mShininess: { type: "f", value: GUI.shininess }
             }
         ]);
         
@@ -409,6 +421,11 @@ jQuery(document).ready(function($) {
         uniforms.mAlpha.value = GUI.opacity;
         uniforms.mAmplitudeD.value = GUI.amplitudeD;
         uniforms.uLightPosition.value = mouse;
+        
+        uniforms.mAmbient.value = GUI.ambient;
+        uniforms.mDiffuse.value = GUI.diffuse;
+        uniforms.mSpecular.value = GUI.specular;
+        uniforms.mShininess.value = GUI.shininess;
         
         uniforms.needsUpdate = true;
         
