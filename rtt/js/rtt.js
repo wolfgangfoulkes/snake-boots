@@ -62,7 +62,7 @@ jQuery(document).ready(function($) {
         this.amplitudeN = 8.0;
         this.octaves = 3;
         this.lacunarity = 2.0;
-        this.rate; //coefficient for time
+        this.rate = 0.001; //coefficient for time
     }
     var GUI = new gui_par();
     
@@ -120,14 +120,16 @@ jQuery(document).ready(function($) {
         
         gui.addColor(GUI, "color");
         gui.add(GUI, "opacity").min(0.0).max(1.0).step(0.01);
-        gui.add(GUI, "amplitudeN").min(1.0).max(256.0).step(8.0);
-        gui.add(GUI, "amplitudeD").min(0.0).max(0.5).step(0.01); //best range is 0-1, but I leave this to test the normal-map.
-        gui.add(GUI, "octaves").min(1).max(8).step(1);
-        gui.add(GUI, "lacunarity").min(1.0).max(16.0);
         gui.add(GUI, "ambient").min(0.0).max(1.0);
         gui.add(GUI, "diffuse").min(0.0).max(1.0);
         gui.add(GUI, "specular").min(0.0).max(1.0);
         gui.add(GUI, "shininess").min(1.0).max(8.0);
+        gui.add(GUI, "rate").min(0.0001).max(0.001).step(0.0001);
+        gui.add(GUI, "amplitudeN").min(1.0).max(256.0).step(8.0);
+        gui.add(GUI, "amplitudeD").min(0.0).max(0.5).step(0.01); //best range is 0-1, but I leave this to test the normal-map.
+        gui.add(GUI, "octaves").min(1).max(8).step(1);
+        gui.add(GUI, "lacunarity").min(1.0).max(16.0);
+        
         //can save data too. lookintoit.
         $gui.append(gui.domElement);
     }
@@ -296,7 +298,7 @@ jQuery(document).ready(function($) {
         var runTime = (curTime.getTime() - initTime);
     
         uniformsD = {
-            mTime: { type: "f", value: runTime * 0.001 },
+            mTime: { type: "f", value: runTime * GUI.rate },
             mLacunarity: { type: "f", value: GUI.lacunarity },
             mOctaves: { type: "i", value: GUI.octaves }
         };
@@ -432,7 +434,7 @@ jQuery(document).ready(function($) {
         //displacement map
         uniformsD.mOctaves.value = GUI.octaves;
         uniformsD.mLacunarity.value = GUI.lacunarity;
-        uniformsD.mTime.value = runTime * 0.001;
+        uniformsD.mTime.value = runTime * GUI.rate;
         uniformsD.needsUpdate = true;
         
         //normal map
